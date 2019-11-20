@@ -10,37 +10,50 @@ app.use(bodyParser.json());
 var port = 5000;
 
 //setup system call --> cpabe-setup
+const { exec } = require('child_process');
+exec('cpabe-setup', (err, stdout, stderr) => {
+  if (err) {
+    // node couldn't execute the command
+    return;
+  }
+
+  // the *entire* stdout and stderr (buffered)
+  //console.log(`stdout: ${stdout}`);
+  //console.log(`stderr: ${stderr}`);
+});
 
 app.route('/genKey')
 	.get((req,res)=>{
+		let id = req.body.id;
 		let attr = req.body.attributes;
 		//system call to create key --> key = cpabe-keygen
 		// key = 
+		//console.log("GET request:" + req.body.id);
+		let s = "cpabe-keygen -o "+id+"_priv_key pub_key master_key '"+attr+"'";
 
+		const { execSync } = require('child_process');
+		execSync(s, (err, stdout, stderr) => {
+		  if (err) {
+		    // node couldn't execute the command
+		    return;
+		  }
+
+		  // the *entire* stdout and stderr (buffered)
+		  //console.log(`stdout: ${stdout}`);
+		  //console.log(`stderr: ${stderr}`);
+		});
+		let fs = require('fs');
+ 		let filename = ""+id+ "_priv_key"
+		let key = fs.readFileSync(filename, 'hex');
+		//let tmp = fs.readFileSync(filename, 'utf8');
+		//console.log(tmp);
 		//get all the assignments
 		res.statusCode = 200;
-		res.setHeader('Content-Type', 'application/plain');
+		res.setHeader('Content-Type', 'plain/text');
 		res.send(key);
+		//maybe delete the key created
 	})
 	.post((req,res)=>{
-		//create new assignment
-		let a = {};
-		a["taskId"] = parseInt(req.body.taskId);
-		a["assignmentId"] = parseInt(req.body.assignmentId);
-		a["workerId"] = parseInt(req.body.workerId);
-		a["assignmentResult"] = parseInt(req.body.assignmentResult);
-		if (a != undefined){
-			assignments.push(a);
-			res.statusCode = 200;
-			res.setHeader('Content-Type', 'text/plain');
-			res.send("Added new assignment");
-		}
-		else{
-			res.statusCode = 500;
-			res.setHeader('Content-Type', 'text/plain');
-			res.send("Internal server error");
-		}
-		
 
 	});
 
