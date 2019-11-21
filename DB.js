@@ -4,7 +4,7 @@ var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-let port = 5000;
+let port = 4000;
 let dbConnected = false;
 
 let mysql = require('mysql');
