@@ -1,0 +1,4 @@
+The TA.js is a Nodejs server that operates as a trusted authority. It accepts two kind of requests:
+- GET /genKey : must include "id"(INT) = the id of the user that is asking for a key, "attributes"(String) = a comma separated list of the attributes of the user to include in the key. It returns a plain/text of hexadecimal charcaters that composes the private key.
+
+- GET /getParam : it returns a plain/text of hexadecimal charcaters that composes the public key.

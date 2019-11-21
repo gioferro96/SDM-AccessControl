@@ -8,18 +8,20 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = 5000;
-
+let pubkey = "";
 //setup system call --> cpabe-setup
 const { exec } = require('child_process');
 exec('cpabe-setup', (err, stdout, stderr) => {
-  if (err) {
-    // node couldn't execute the command
-    return;
-  }
-
-  // the *entire* stdout and stderr (buffered)
-  //console.log(`stdout: ${stdout}`);
-  //console.log(`stderr: ${stderr}`);
+	if (err) {
+		// node couldn't execute the command
+		return;
+	}
+	let fs = require('fs');
+	let filename = "pub_key"
+	pubkey = fs.readFileSync(filename, 'hex');
+	// the *entire* stdout and stderr (buffered)
+	//console.log(`stdout: ${stdout}`);
+	//console.log(`stderr: ${stderr}`);
 });
 
 app.route('/genKey')
@@ -56,7 +58,12 @@ app.route('/genKey')
 	.post((req,res)=>{
 
 	});
-
+app.route('/getParam')
+	.get((req,res)=>{
+		res.statusCode = 200;
+		res.setHeader('Content-Type', 'plain/text');
+		res.send(pubkey);
+	})
 
 app.listen(port);
 
