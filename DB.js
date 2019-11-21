@@ -33,7 +33,7 @@ app.route('/data')
 		if(dbConnected){
 			if((id != null)&&(type != null)){
 				let types = type.split(",");
-				let sql = "select data from data where userid="+id+" AND type='"+types[0]+"'";
+				let sql = "select info from data where userid="+id+" AND type='"+types[0]+"'";
 				for (i = 1; i < types.length; i++){
 					sql += " OR type='"+types[i]+"'";
 				}
@@ -45,7 +45,7 @@ app.route('/data')
 					res.send(result);
 				});
 			}else if (id != null){
-				let sql = "select data from data where userid="+id;
+				let sql = "select info from data where userid="+id;
 				con.query(sql, function (err, result) {
 					if (err) throw err;
 					res.statusCode = 200;
@@ -68,7 +68,6 @@ app.route('/data')
 
 	})
 	.post((req,res)=>{
-		let upid = req.body.uploaderid;
 		let uname = req.body.username;
 		let type = req.body.type;
 		//check type is unique
@@ -79,7 +78,7 @@ app.route('/data')
 			let id = result[0].id;
 			var dt = new Date();
 			let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-			let sql2 = "insert into data values ("+id+", "+upid+", '"+today+"', '"+type+"', '"+data+"')";
+			let sql2 = "insert into data values ("+id+", '"+today+"', '"+type+"', '"+data+"')";
 			con.query(sql2, function (err, result) {
 				if(err) throw err;
 				res.statusCode = 200;
@@ -89,6 +88,44 @@ app.route('/data')
 		});
 
 	});
+
+app.route('/tempData')
+	.get((req,res)=>{
+		let id = req.body.id;
+		let sql = "select uploaderName, uploadDate, type, info from tempData where userid="+id;
+		con.query(sql, function (err,result) {
+			if(err) throw err;
+			res.statusCode = 200;
+			res.setHeader('Content-Type', 'plain/text');
+			res.send(result);
+		});
+	})
+	.post((req,res)=>{
+		let upname = req.body.uploadername;
+		let uname = req.body.username;
+		let type = req.body.type;
+		//check type is unique
+		let data = req.body.data;
+		let sql = "select id from users where name='"+uname+"'";
+		con.query(sql, function (err, result) {
+			if (err) throw err;
+			let id = result[0].id;
+			var dt = new Date();
+			let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+			let sql2 = "insert into tempData values ("+id+", '"+upname+"', '"+today+"', '"+type+"', '"+data+"')";
+			console.log(sql2);
+			con.query(sql2, function (err, result) {
+				if(err) throw err;
+				res.statusCode = 200;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("ok");
+			});
+		});
+	});
+
+
+
+
 
 
 app.listen(port);
