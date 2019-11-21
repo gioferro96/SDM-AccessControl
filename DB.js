@@ -27,10 +27,48 @@ con.connect(function(err) {
 
 app.route('/data')
 	.get((req,res)=>{
-		let id = req.body.id;
+		let uname = req.body.username;
 		let type = req.body.type;
-
+		let id = 0;
 		if(dbConnected){
+			if(uname != null){
+				let sql = "select id from users where name='"+uname+"'";
+				con.query(sql, function(err,result) {
+					if(err) console.log(err);
+					id = result[0].id;
+					console.log(id);
+					if(type != null){
+						let types = type.split(",");
+						let sql = "select info from data where userid="+id+" AND type='"+types[0]+"'";
+						for (i = 1; i < types.length; i++){
+							sql += " OR type='"+types[i]+"'";
+						}
+						console.log(sql);
+						con.query(sql, function (err, result) {
+							if (err) console.log(err);
+							res.statusCode = 200;
+							res.setHeader('Content-Type', 'plain/text');
+							res.send(result);
+						});
+					}else{
+						let sql = "select info from data where userid="+id;
+						con.query(sql, function (err, result) {
+							if (err) console.log(err);
+							res.statusCode = 200;
+							res.setHeader('Content-Type', 'plain/text');
+							res.send(result);
+						});
+					}
+				});
+			}else{
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: missing information in the request (id, type)");
+			}
+		}
+		
+
+		/*if(dbConnected){
 			if((id != null)&&(type != null)){
 				let types = type.split(",");
 				let sql = "select info from data where userid="+id+" AND type='"+types[0]+"'";
@@ -62,29 +100,31 @@ app.route('/data')
 			res.statusCode = 500;
 			setHeader('Content-Type', 'plain/text');
 			res.send("Error: no db connection");
-		}
+		}*/
 
 
 
 	})
 	.post((req,res)=>{
-		let uname = req.body.username;
+		let id = req.body.id;
 		let type = req.body.type;
 		//check type is unique
 		let data = req.body.data;
-		let sql = "select id from users where name='"+uname+"'";
-		con.query(sql, function (err, result) {
-			if (err) throw err;
-			let id = result[0].id;
-			var dt = new Date();
-			let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-			let sql2 = "insert into data values ("+id+", '"+today+"', '"+type+"', '"+data+"')";
-			con.query(sql2, function (err, result) {
-				if(err) throw err;
+		
+		var dt = new Date();
+		let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+		let sql2 = "insert into data values ("+id+", '"+today+"', '"+type+"', '"+data+"')";
+		con.query(sql2, function (err, result) {
+			if(err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
 				res.statusCode = 200;
 				res.setHeader('Content-Type', 'plain/text');
 				res.send("ok");
-			});
+			}
+			
 		});
 
 	});
@@ -94,10 +134,16 @@ app.route('/tempData')
 		let id = req.body.id;
 		let sql = "select uploaderName, uploadDate, type, info from tempData where userid="+id;
 		con.query(sql, function (err,result) {
-			if(err) throw err;
-			res.statusCode = 200;
-			res.setHeader('Content-Type', 'plain/text');
-			res.send(result);
+			if(err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
+				res.statusCode = 200;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send(result);
+			}
+			
 		});
 	})
 	.post((req,res)=>{
