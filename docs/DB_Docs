@@ -2,8 +2,8 @@ The DB.js file creates a Nodejs server that uses a local database called "patien
 The server accepts two requests:
 - GET /data : must include in the body "username"(mandatory) = the name of the owner of the data you want to retrieve, "type"(optional) = one of the possible types of data you want to retrieve. If the type is not specified the server returns all the data of the specified user, while if it is specified it returns only the specified type of data about the specified user.
 
--POST /data : must include in the body "id"(INT) = the id of the user who is trying to upload data, "type"(String < 20 char) = the type of data uploaded, "data"(String < 400 char) = the data itself. It return "ok" if the insertion of the data was successful, "Error" otherwise.
+-POST /data : must include (all mandatory) in the body "id"(INT) = the id of the user who is trying to upload data, "type"(String < 20 char) = the type of data uploaded, "data"(String < 400 char) = the data itself. It return "ok" if the insertion of the data was successful, "Error" otherwise.
 
-- GET /tempData : must include in the body "id"(INT) = theuser id who wants to check for temporary data. It returns all the temporary data for the specified user or it return "Error".
+- GET /tempData : must include (all mandatory) in the body "id"(INT) = theuser id who wants to check for temporary data. It returns all the temporary data for the specified user or it return "Error".
 
-- POST /tempData : must include in the body "uploadername"(String < 20 char) = the name of who want to uploade temporary data, "username"(String < 20 char) = the name of the user to which the data refers to (= the patient), "type"(String < 20 char) = the type of data uploaded, "data"(String < 400 char) = the data itself.
+- POST /tempData : must include (all mandatory) in the body "uploadername"(String < 20 char) = the name of who want to uploade temporary data, "username"(String < 20 char) = the name of the user to which the data refers to (= the patient), "type"(String < 20 char) = the type of data uploaded, "data"(String < 400 char) = the data itself.
