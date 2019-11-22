@@ -23,9 +23,9 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 });
 
 app.route('/genKey')
-	.get((req,res)=>{
-		let name = req.query.name;
-		let attr = req.query.attributes;
+	.search((req,res)=>{
+		let name = req.body.name;
+		let attr = req.body.attributes;
 		//console.log(name+" "+attr);
 		let url = "http://localhost:4000/checkname/"+name;
 		fetch(url)
