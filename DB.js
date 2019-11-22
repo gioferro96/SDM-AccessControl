@@ -47,8 +47,8 @@ app.route('/checkname/:name')
 
 app.route('/data')
 	.get((req,res)=>{
-		let uname = req.body.username;
-		let type = req.body.type;
+		let uname = req.query.username;
+		let type = req.query.type;
 		let id = 0;
 		if(dbConnected){
 			if(uname != null){
@@ -129,7 +129,7 @@ app.route('/data')
 
 app.route('/tempData')
 	.get((req,res)=>{
-		let id = req.body.id;
+		let id = req.query.id;
 		if(id != null){
 			let sql = "select uploaderName, uploadDate, type, info from tempData where userid="+id;
 			con.query(sql, function (err,result) {

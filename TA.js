@@ -24,18 +24,19 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 
 app.route('/genKey')
 	.get((req,res)=>{
-		let name = req.body.name;
-		let attr = req.body.attributes;
-
+		let name = req.query.name;
+		let attr = req.query.attributes;
+		//console.log(name+" "+attr);
 		let url = "http://localhost:4000/checkname/"+name;
 		fetch(url)
 			.then(body => {
+				//console.log("insdie body");
 				return body.json();
 			})
 			.then(data => {
 				//console.log(data);
 				if(data != null){
-					//console.log("data != null");
+					console.log("data != null");
 					//system call to create key --> key = cpabe-keygen
 					let s = "cpabe-keygen -o "+name+"_priv_key pub_key master_key '"+attr+"'";
 
