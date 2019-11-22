@@ -1,8 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
-
-//instantiate express
+const fetch = require("node-fetch");
 var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,34 +24,55 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 
 app.route('/genKey')
 	.get((req,res)=>{
-		let id = req.body.id;
+		let name = req.body.name;
 		let attr = req.body.attributes;
-		//system call to create key --> key = cpabe-keygen
-		// key = 
-		//console.log("GET request:" + req.body.id);
-		let s = "cpabe-keygen -o "+id+"_priv_key pub_key master_key '"+attr+"'";
 
-		const { execSync } = require('child_process');
-		execSync(s, (err, stdout, stderr) => {
-		  if (err) {
-		    // node couldn't execute the command
-		    return;
-		  }
+		let url = "http://localhost:4000/checkname/"+name;
+		fetch(url)
+			.then(body => {
+				return body.json();
+			})
+			.then(data => {
+				//console.log(data);
+				if(data != null){
+					//console.log("data != null");
+					//system call to create key --> key = cpabe-keygen
+					let s = "cpabe-keygen -o "+name+"_priv_key pub_key master_key '"+attr+"'";
 
-		  // the *entire* stdout and stderr (buffered)
-		  //console.log(`stdout: ${stdout}`);
-		  //console.log(`stderr: ${stderr}`);
-		});
-		let fs = require('fs');
- 		let filename = ""+id+ "_priv_key"
-		let key = fs.readFileSync(filename, 'hex');
-		//let tmp = fs.readFileSync(filename, 'utf8');
-		//console.log(tmp);
-		//get all the assignments
-		res.statusCode = 200;
-		res.setHeader('Content-Type', 'plain/text');
-		res.send(key);
-		//maybe delete the key created
+					const { execSync } = require('child_process');
+					execSync(s, (err, stdout, stderr) => {
+					  if (err) {
+					    // node couldn't execute the command
+					    //console.log("Error cp-abe: "+err);
+					    return;
+					  }
+					});
+					let fs = require('fs');
+			 		let filename = ""+name+"_priv_key"
+					let key = fs.readFileSync(filename, 'hex');
+					//console.log("chiave: "+key);
+					let t = {
+						"public_key": pubkey,
+						"id": data,
+						"private_key": key
+					}
+					//console.log(typeof t);
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send(t);
+					//maybe delete the key created
+				}else{
+					res.statusCode = 500;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("Error");
+				}
+			})
+			.catch(error =>{
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error");
+			});
+		
 	})
 	.post((req,res)=>{
 

@@ -21,6 +21,29 @@ con.connect(function(err) {
 	dbConnected = true;
 });
 
+app.route('/checkname/:name')
+	.get((req,res)=>{
+		let uname = req.params.name;
+		let sql = "select id from users where name='"+uname+"'";
+		con.query(sql, function (err,result) {
+			if (err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
+				if (result.length > 0){
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send(""+result[0].id);
+				}else{
+					res.statusCode = 500;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("Error: "+err);
+				}
+				
+			}
+		});
+	});
 
 app.route('/data')
 	.get((req,res)=>{
