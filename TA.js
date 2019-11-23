@@ -20,6 +20,7 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);
 	//console.log(`stderr: ${stderr}`);
+	console.log(typeof pubkey);
 });
 
 app.route('/genKey')
@@ -36,7 +37,7 @@ app.route('/genKey')
 			.then(data => {
 				//console.log(data);
 				if(data != null){
-					console.log("data != null");
+					//console.log("data != null");
 					//system call to create key --> key = cpabe-keygen
 					let s = "cpabe-keygen -o "+name+"_priv_key pub_key master_key '"+attr+"'";
 

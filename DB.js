@@ -156,7 +156,7 @@ app.route('/tempData')
 		let type = req.body.type;
 		//check type is unique
 		let data = req.body.data;
-		if((upname != null)&&(uname != null)&&(data != null)&&(data != null)){
+		if((upname != null)&&(uname != null)&&(type != null)&&(data != null)){
 			let sql = "select id from users where name='"+uname+"'";
 			con.query(sql, function (err, result) {
 				if (err){
@@ -181,6 +181,30 @@ app.route('/tempData')
 			res.statusCode = 500;
 			res.setHeader('Content-Type', 'plain/text');
 			res.send("Error: missing information in the request (uploadername, username, type, data)");
+		}
+	})
+	.delete((req,res)=>{
+		let id = req.body.id;
+		let upname = req.body.uploadername;
+		//check type is unique
+		let data = req.body.data;
+		if((upname != null)&&(id != null)&&(data != null)){
+			let sql = "delete from tempData where userid="+id+" and uploaderName='"+upname+"' and info='"+data+"'";
+			con.query(sql, function (err, result) {
+				if (err){
+					res.statusCode = 500;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("Error: "+err);
+				}else{
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("ok");
+				}
+			});
+		}else{
+			res.statusCode = 500;
+			res.setHeader('Content-Type', 'plain/text');
+			res.send("Error: missing information in the request (uploadername, userid, data)");
 		}
 	});
 
