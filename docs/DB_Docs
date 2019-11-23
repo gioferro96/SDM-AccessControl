@@ -9,4 +9,6 @@ The server accepts the following requests:
 
 - POST /tempData : must include (all mandatory) in the body "uploadername"(String < 20 char) = the name of who want to uploade temporary data, "username"(String < 20 char) = the name of the user to which the data refers to (= the patient), "type"(String < 20 char) = the type of data uploaded, "data"(String < 400 char) = the data itself.
 
+- DELETE /tempData : must include (all mandatory) in the body "id"(INT) = the id of th euser that wants to delete from the database, "uploadername"(String < 20) = the name of the uploader of the original data, "data"(String < 400) = the data to be deleted. If all the provided inputs match a row in the tempData table in the database then the row is deleted and it returns "ok", otherwise it returns "Error".  
+
 - GET /checkname/:name : must include in the body "name" = the name of the user to check the presence in the database. It returns the "id"(INT) of the user if the user is present, "Error" otherwise.
