@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Patient Home Page</title>
+
+    <!-- require jquery and bootstrap scripts -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    
+    <!-- adding style here -->
+    <style type="text/css">
+      header{
+        background-color: lightgray;
+        font-size:20px;
+        padding:15px;
+      }
+      header, .form-group{
+        margin-bottom: 3%;
+      }
+      .form-group{
+        width:50%;
+      }
+      #body{
+        margin-left:3%;
+        margin-right:3%;
+      }
+      .form-control{
+        margin: 8px;
+      }
+      #right_header{
+        width:20%;
+        font-size:15px;
+        margin-right:0px;
+      }
+      #left_header{
+        margin-left:0;
+        width:40%;
+        display:inline-block;
+      } 
+      #id {
+        width:49%;
+        display: inline-block;
+      }
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+      }
+      td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+      }
+      tr:nth-child(even) {
+          background-color: #dddddd;
+      }
+    </style>
+  </head>
+  <body ng-app="application" ng-controller="appController">
+    <header>
+      <div id="left_header">Secure Data Management</div>
+      <i id="right_header">Cryptographically Enforced Access Control - Group 6</i>
+    </header>
+
+    <div id="body">
+      
+      <label>Select Identity</label>
+        <p>
+          <select name="identity" ng-model="request_identity">
+            <option value="alice">Alice</option>
+            <option value="bob">Bob</option>
+            <option value="11">Charles</option>
+            <option value="dave">Dave</option>
+            <option value="eveline">Eveline</option>
+            <option value="frank">Frank</option>
+          </select>
+        </p>
+
+      <div class="form-group">
+        <label>Look for data to verify</label>
+        <p><input id="getDataToVerify" type="submit" value="Dowload" class="btn btn-primary" ng-click="getDataToVerify()"></p>
+      </div>
+ 
+      <table id="phr_to_verify" class="table" align="center">
+
+        <tr>
+          <th>Patient ID</th>
+          <th>From</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Data</th>
+        </tr> 
+
+        <tr ng-repeat="phr in phr_to_verify">
+          <td>{{phr.id}}</td>
+          <td>{{phr.uploaderName}}</td>
+          <td>{{phr.uploadDate}}</td>
+          <td>{{phr.type}}</td>
+          <td>{{phr.info}}</td>
+        </tr>
+      </table>
+
+      <div class="form-group">
+        <label>Verify data</label>
+        <p><input id="getDataToVerify" type="submit" value="Verify" class="btn btn-primary" ng-click="getDataToVerify()"></p>
+        <h5 style="color:green;margin-bottom:2%" id="success_verify_phr">Success! New data has been correcly verified</h5>
+        <h5 style="color:red;margin-bottom:2%" id="error_verify_phr">Error: Something went wrong. </h5>
+      </div>
+      
+
+
+      <div class="form-group">
+        <label>Update Personal Health Record</label><br>
+        <h5 style="color:green;margin-bottom:2%" id="success_add_phr">Success! Your PHR has been correclty updated</h5>
+        <h5 style="color:red;margin-bottom:2%" id="error_add_phr">Error: Something went wrong. </h5>
+        Enter ID: <input class="form-control" name="IDtoAdd" placeholder="Ex: Luis" ng-model="phr.id">
+        Enter record type: <input class="form-control" name="toAdd" placeholder="Ex: Prescription" ng-model="phr.type">
+        Enter data: <input class="form-control" type="text" placeholder="Ex: Prescription for arnica gel due to ankle sprain, 5 days, 3 times a day" ng-model="phr.data">
+        <input id="addData" type="submit" value="Upload" class="btn btn-primary" ng-click="addPHRData()">
+      </div>
+
+    </div>
+  </body>
+    <!-- requiring the angular page -->
+    <script type="text/javascript" src="app.js"> </script>
+</html>
