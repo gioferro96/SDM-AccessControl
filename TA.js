@@ -20,7 +20,7 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);
 	//console.log(`stderr: ${stderr}`);
-	console.log(typeof pubkey);
+	//console.log(typeof pubkey);
 });
 
 app.route('/genKey')
@@ -66,24 +66,25 @@ app.route('/genKey')
 				}else{
 					res.statusCode = 500;
 					res.setHeader('Content-Type', 'plain/text');
-					res.send("Error");
+					res.send("Error: data is null");
 				}
 			})
 			.catch(error =>{
 				res.statusCode = 500;
 				res.setHeader('Content-Type', 'plain/text');
-				res.send("Error");
+				res.send("Error: "+error);
 			});
 		
-	})
-	.post((req,res)=>{
-
 	});
+
 app.route('/getParam')
 	.get((req,res)=>{
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'plain/text');
-		res.send(pubkey);
+		let t = {
+			"pub_key": pubkey
+		}
+		res.send(t);
 	})
 
 app.listen(port);
