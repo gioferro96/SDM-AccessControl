@@ -66,10 +66,12 @@
 
     <div id="body">
       
-      <label>Select Identity</label>
+      <div class='row'>
+      <div class='col-sm-6'>
+        <label>Select Identity</label>
         <p>
           <select name="identity" ng-model="request_identity">
-            <option value="alice">Alice</option>
+            <option value="956">Alice</option>
             <option value="bob">Bob</option>
             <option value="11">Charles</option>
             <option value="dave">Dave</option>
@@ -77,6 +79,26 @@
             <option value="frank">Frank</option>
           </select>
         </p>
+      </div>
+      <div class='col-sm-6 form-group'>
+        <label>Select Identity to Request a Key</label>
+        <p>
+          <select name="name" ng-model="key_identity">
+            <option value="Alice">Alice</option>
+            <option value="Bob">Bob</option>
+            <option value="Charles">Charles</option>
+            <option value="Dave">Dave</option>
+            <option value="Eveline">Eveline</option>
+            <option value="Frank">Frank</option>
+          </select>
+        </p>
+        Enter attributes: <input class="form-control" name="keyAttributes" placeholder="patient,hospital" ng-model="key_attributes">
+        <p><input id="keyRequest" type="submit" value="Request Keys" class="btn btn-primary" ng-click="keyRequest()"></p>
+        <h5 style="color:green;margin-bottom:2%" id="success_key">Success! Key received</h5>
+        <h5 style="color:red;margin-bottom:2%" id="error_key">Error: Something went wrong. </h5>
+      </div>
+    </div>
+      
 
       <div class="form-group">
         <label>Look for data to verify</label>
