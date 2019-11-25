@@ -232,21 +232,26 @@ app.route('/user')
 		let cat = req.body.category;
 		let dob = req.body.dob;
 		let id = checkid();
-		console.log(id);
-		let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
-		console.log(sql);
-		con.query(sql, function(err,result) {
-			if(err){
-				res.statusCode = 500;
-				res.setHeader('Content-Type', 'plain/text');
-				res.send("Error: "+err);
-			}else{
-				ids.push(id);
-				res.statusCode = 200;
-				res.setHeader('Content-Type', 'plain/text');
-				res.send("ok");
-			}
-		});
+		if((uname!=null)&&(addr!=null)&&(dob!=null)&&(cat!=null)){
+			let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
+			con.query(sql, function(err,result) {
+				if(err){
+					res.statusCode = 500;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("Error: "+err);
+				}else{
+					ids.push(id);
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("ok");
+				}
+			});
+		}else{
+			res.statusCode = 400;
+			res.setHeader('Content-Type', 'plain/text');
+			res.send("Bad request: some parameters are missing (name, address, category, date of birth)");
+		}
+		
 	});
 
 app.listen(port);
