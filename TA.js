@@ -15,7 +15,7 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 		return;
 	}
 	let fs = require('fs');
-	let filename = "pub_key"
+	let filename = "pub_key";
 	pubkey = fs.readFileSync(filename, 'hex');
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);
@@ -50,7 +50,7 @@ app.route('/genKey')
 					  }
 					});
 					let fs = require('fs');
-			 		let filename = ""+name+"_priv_key"
+			 		let filename = ""+name+"_priv_key";
 					let key = fs.readFileSync(filename, 'hex');
 					//console.log("chiave: "+key);
 					let t = {
