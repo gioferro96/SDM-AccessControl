@@ -225,7 +225,33 @@ app.route('/get_all')
 			});
 	});
 
+app.route('/user')
+	.post((req,res) =>{
+		let uname = req.body.name;
+		let addr = req.body.address;
+		let cat = req.body.category;
+		let dob = req.body.dob;
+		let id = getRndInteger(1,65000);
+		let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
+		console.log(sql);
+		con.query(sql, function(err,result) {
+			if(err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
+				res.statusCode = 200;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("ok");
+			}
+		});
+	});
+
 app.listen(port);
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
 
 //check status
 console.log('Server running at http://localhost:' + port);
