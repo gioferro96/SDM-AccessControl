@@ -12,10 +12,8 @@ app.controller('appController', function($scope, appFactory){
 	$scope.keyRequest = function(){
 
 		console.log("Inside keyRequest of app.js function");
-		var key_req = $scope.key_identity;
-		var attr = $scope.key_attributes;
 
-		appFactory.keyRequest(key_req, attr, function(data){
+		appFactory.keyRequest(function(data){
 			console.log(data)
 			if (data == "KEY-OK"){
 				$("#success_key").show();
@@ -27,15 +25,19 @@ app.controller('appController', function($scope, appFactory){
 		});
 	}
 	
-	$scope.getClientData = function(){
+	$scope.sendClientData = function(){
 
 		console.log("Inside getClientData of actors app.js")
-		var req_target = $scope.request_target;
+		var req_upname = $scope.phr_upname;
+		var req_uname = $scope.phr_uname;
+		var req_type = $scope.phr_type;
+		var req_info = $scope.phr_info;
 
-		appFactory.getClientData(req_target, function(data){
-			console.log(data);
-			console.log(data.length)
-			$scope.phr_to_get = data;
+		appFactory.sendClientData(req_upname, req_uname, req_type, req_info, function(data){
+			
+			console.log("Fatto");
+			//console.log(data.length)
+			//$scope.phr_to_get = data;
 		});
 	}
 
@@ -46,22 +48,17 @@ app.factory('appFactory', function($http){
 	
 	var factory = {};
 
-	factory.keyRequest = function(identity, attr, callback){
+	factory.keyRequest = function(callback){
 		console.log('Inside keyRequest factory function')
-		console.log(identity);
-		console.log(attr);
-		params = identity + "-" + attr;
-		
-    	$http.get('http://localhost:5002/get_key/'+params).success(function(output){
+    	$http.get('http://localhost:5003/get_pub_key').success(function(output){
 			callback(output)
 		});
 	}
 
-	factory.getClientData = function(identity, callback){
+	factory.sendClientData = function(upname, uname, type, info, callback){
 		console.log('Inside getClientData factory function')
-		console.log(identity);
-
-		$http.get('http://localhost:5002/get_client_data/'+identity).success(function(output){
+		params = upname + "-" + uname + "-" + type + "-" + info;
+		$http.get('http://localhost:5003/send_client_data/'+params).success(function(output){
 			callback(output)
 		});
 	}
