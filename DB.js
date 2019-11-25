@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 let port = 4000;
 let dbConnected = false;
-
+let ids = [];
 let mysql = require('mysql');
 var con = mysql.createConnection({
   host: "localhost",
@@ -231,7 +231,10 @@ app.route('/user')
 		let addr = req.body.address;
 		let cat = req.body.category;
 		let dob = req.body.dob;
-		let id = getRndInteger(1,65000);
+		let id = null;
+		while (ids.includes(id)){
+			id = getRndInteger(1,65000);
+		}
 		let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
 		console.log(sql);
 		con.query(sql, function(err,result) {
@@ -240,6 +243,7 @@ app.route('/user')
 				res.setHeader('Content-Type', 'plain/text');
 				res.send("Error: "+err);
 			}else{
+				ids.push(id);
 				res.statusCode = 200;
 				res.setHeader('Content-Type', 'plain/text');
 				res.send("ok");
