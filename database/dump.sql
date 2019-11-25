@@ -40,7 +40,7 @@ CREATE TABLE `data` (
 
 LOCK TABLES `data` WRITE;
 /*!40000 ALTER TABLE `data` DISABLE KEYS */;
-INSERT INTO `data` VALUES (12,'2013-09-18','check','everything ok'),(11,'2019-11-21','check','feels tired, better to sleep a lot tomorrow');
+INSERT INTO `data` VALUES (12,'2013-09-18','check','everything ok'),(11,'2019-11-21','check','feels tired, better to sleep a lot tomorrow'),(12,'2019-11-21','check','feels tired, better to sleep a lot tomorrow'),(12,'2019-11-21','bloodAnalysis','too high colesterolo'),(10,'2019-11-21','bloodAnalysis','too high colesterolo'),(11,'2019-11-21','doctor','feeling sore'),(12,'2019-11-21','doctor','feeling sore');
 /*!40000 ALTER TABLE `data` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +56,7 @@ CREATE TABLE `tempData` (
   `uploaderName` varchar(40) NOT NULL,
   `uploadDate` date DEFAULT NULL,
   `type` varchar(20) DEFAULT NULL,
-  `info` varchar(2048) DEFAULT NULL
+  `info` varchar(400) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -66,7 +66,7 @@ CREATE TABLE `tempData` (
 
 LOCK TABLES `tempData` WRITE;
 /*!40000 ALTER TABLE `tempData` DISABLE KEYS */;
-INSERT INTO `tempData` VALUES (11,'hospital1','2019-11-21','check','feels tired, better to sleep a lot tomorrow'),(12,'hospital1','2019-11-21','check','is very hungry');
+INSERT INTO `tempData` VALUES (11,'hospital1','2019-11-21','check','feels tired, better to sleep a lot tomorrow'),(12,'MSThospital','2019-11-21','ECG','no bad signs in the ecg');
 /*!40000 ALTER TABLE `tempData` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,6 +82,7 @@ CREATE TABLE `users` (
   `name` varchar(20) NOT NULL,
   `dob` date DEFAULT NULL,
   `address` varchar(40) DEFAULT NULL,
+  `category` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
@@ -94,7 +95,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'healthclub1',NULL,'Hengelo'),(10,'riccardo',NULL,'bho'),(11,'damiano',NULL,'bassano'),(12,'giovanni','2013-09-23','casa mia'),(14,'hospital1',NULL,'pietheistraat'),(20,'MSThospital',NULL,'enschede');
+INSERT INTO `users` VALUES (0,'Antonio','1983-09-09','Milano','doctor'),(2,'Health Club 1',NULL,'Hengelo','healthclub'),(10,'Riccardo','1990-03-20','Milano','patient'),(11,'Damiano','2000-03-20','Bassano','patient'),(12,'Giovanni','2000-10-20','Vicenza','patient'),(14,'Hospital1',NULL,'Enschede','hospital'),(20,'MSThospital',NULL,'Enschede','hospital'),(21,'The Doctor','1965-12-20','Vicenza','doctor'),(22,'Doctor House','1975-01-24','New York','doctor'),(27,'Memorial Hospital',NULL,'Washington','hospital'),(30,'Public Hospital',NULL,'Amsterdam','hospital'),(31,'Training center',NULL,'Amsterdam','healthclub'),(32,'Run Boy Run',NULL,'Paris','healthclub'),(40,'Employer','1980-12-02','Utrecht','employer'),(41,'The Boss','1960-10-02','Arnhem','employer'),(12622,'Tony','2019-09-09','Home','patient');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -107,4 +108,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-21 12:41:03
+-- Dump completed on 2019-11-25 18:50:04

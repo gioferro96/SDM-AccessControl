@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 let port = 4000;
 let dbConnected = false;
-
+let ids = [];
 let mysql = require('mysql');
 var con = mysql.createConnection({
   host: "localhost",
@@ -225,7 +225,42 @@ app.route('/get_all')
 			});
 	});
 
+app.route('/user')
+	.post((req,res) =>{
+		let uname = req.body.name;
+		let addr = req.body.address;
+		let cat = req.body.category;
+		let dob = req.body.dob;
+		let id = checkid();
+		console.log(id);
+		let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
+		console.log(sql);
+		con.query(sql, function(err,result) {
+			if(err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
+				ids.push(id);
+				res.statusCode = 200;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("ok");
+			}
+		});
+	});
+
 app.listen(port);
+function checkid(){
+	let id = 0;
+	while (true){
+		id = getRndInteger(1,65000);
+		if(!ids.includes(id)) return id;
+	}
+	
+}
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
 
 //check status
 console.log('Server running at http://localhost:' + port);
