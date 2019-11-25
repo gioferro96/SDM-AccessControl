@@ -27,7 +27,7 @@ app.route('/genKey')
 	.search((req,res)=>{
 		let name = req.body.name;
 		let attr = req.body.attributes;
-		//console.log(name+" "+attr);
+		console.log(name+" "+attr);
 		let url = "http://localhost:4000/checkname/"+name;
 		fetch(url)
 			.then(body => {
@@ -35,7 +35,7 @@ app.route('/genKey')
 				return body.json();
 			})
 			.then(data => {
-				//console.log(data);
+				console.log(data);
 				if(data != null){
 					//console.log("data != null");
 					//system call to create key --> key = cpabe-keygen

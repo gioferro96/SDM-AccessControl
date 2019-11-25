@@ -1,6 +1,21 @@
 var app = angular.module('application', []);
 
-// Angular Controller
+app.run(['$rootScope', '$http', function($rootScope, $http) {
+	var req = {
+		method: 'GET',
+		url: 'http://localhost:5001/get_all/'
+	};
+	console.log('Running request');
+	
+	$http(req).then(function(response){
+		console.log(response);
+		
+		$rootScope.users_list = response.data;
+
+	}).catch(err => console.log(err))
+	
+}]);
+
 app.controller('appController', function($scope, appFactory){
 
 	$("#success_add_phr").hide();
@@ -33,7 +48,8 @@ app.controller('appController', function($scope, appFactory){
 	$scope.getDataToVerify = function(){
 
 		console.log("Inside getDataToVerify of app.js function");
-		var req_identity = $scope.request_identity;
+		var req_identity = $scope.request_identity.split(',')[0];
+		console.log(req_identity)
 
 		appFactory.getDataToVerify(req_identity, function(data){
 			console.log(data);
@@ -44,18 +60,24 @@ app.controller('appController', function($scope, appFactory){
 
 	$scope.addPHRData = function(){
 		console.log("Inside scope.addPHRData function");
-		var req_identity = $scope.request_identity;
+		var req_identity = $scope.request_identity.split(',')[0];
+		var req_name = $scope.request_identity.split(',')[1];
 
-		appFactory.addPHRData($scope.toCreate, purpose, req_identity, function(data){
-			
-			
+		appFactory.addPHRData($scope.phr, req_identity, req_name, function(data){
+			console.log(data)
+			if (data == "WRITE-OK"){
+				$("#success_add_phr").show();
+				$("#error_add_phr").hide();
+			}else{
+				$("#error_add_phr").show();
+				$("#success_add_phr").hide();
+			}
 		});
 
 	}
 
-});
+})
 
-// Angular Factory
 app.factory('appFactory', function($http){
 	
 	var factory = {};
@@ -81,16 +103,19 @@ app.factory('appFactory', function($http){
 	}
 	
 
-	factory.addPHRData = function(data, purpose, identity, callback){
+	factory.addPHRData = function(data, identity, name, callback){
 		console.log('Inside recordEhr factory function');
-		console.log(identity);
+		params = identity + "-" + name + "-" + data.type + "-" + data.data;
+		console.log(params);
 
-    	$http.get('http://localhost:5001/'+identity).success(function(output){
+    	$http.get('http://localhost:5001/add_data/'+params).success(function(output){
 			callback(output)
 		});
 	}
 
 	return factory;
 });
+
+
 
 

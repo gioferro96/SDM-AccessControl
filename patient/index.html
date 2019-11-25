@@ -70,13 +70,8 @@
       <div class='col-sm-6'>
         <label>Select Identity</label>
         <p>
-          <select name="identity" ng-model="request_identity">
-            <option value="956">Alice</option>
-            <option value="bob">Bob</option>
-            <option value="11">Charles</option>
-            <option value="dave">Dave</option>
-            <option value="eveline">Eveline</option>
-            <option value="frank">Frank</option>
+          <select name="identity" ng-model="request_identity" ng-cloak>
+              <option ng-repeat="user in users_list" value="{{user.id}},{{user.name}}">{{user.name}}</option>
           </select>
         </p>
       </div>
@@ -137,7 +132,7 @@
         <label>Update Personal Health Record</label><br>
         <h5 style="color:green;margin-bottom:2%" id="success_add_phr">Success! Your PHR has been correclty updated</h5>
         <h5 style="color:red;margin-bottom:2%" id="error_add_phr">Error: Something went wrong. </h5>
-        Enter ID: <input class="form-control" name="IDtoAdd" placeholder="Ex: Luis" ng-model="phr.id">
+        <!--Enter ID: <input class="form-control" name="IDtoAdd" placeholder="Ex: Luis" ng-model="phr.id">-->
         Enter record type: <input class="form-control" name="toAdd" placeholder="Ex: Prescription" ng-model="phr.type">
         Enter data: <input class="form-control" type="text" placeholder="Ex: Prescription for arnica gel due to ankle sprain, 5 days, 3 times a day" ng-model="phr.data">
         <input id="addData" type="submit" value="Upload" class="btn btn-primary" ng-click="addPHRData()">

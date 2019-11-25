@@ -208,6 +208,22 @@ app.route('/tempData')
 		}
 	});
 
+app.route('/get_all')
+	.get((req,res) => {
+		console.log("Request for get all")
+		let sql = "select id,name from users";
+			con.query(sql, function (err, result) {
+				if (err){
+					res.statusCode = 500;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send("Error: "+err);
+				}else{
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'plain/text');
+					res.send(result);
+				}
+			});
+	});
 
 app.listen(port);
 
