@@ -28,30 +28,47 @@ module.exports = function(app){
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
+
   .get('/get_key/:p', function(req, res){
-    var p = req.params.p.split("-");
+    var p = req.params.p.split(",");
     console.log(p)
-    console.log("Making request for genKey with name " + p[0])
-    console.log("Attributes: " + p[1]);
-    fetch('http://localhost:5000/genKey', {
-      method: 'SEARCH',
-      body:  'name=' + p[0] + '&attributes=' + p[1],
+    console.log("Making request to DB for user with name " + p[0])
+    console.log("Attributes: " + p[3]);
+    fetch('http://localhost:4000/user', {
+      method: 'POST',
+      body:  'name=' + p[0] + '&address=' + p[1] + '&dob=' + p[2] + '&category=patient',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
     .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
-    .then(resp => resp.json()) // Transform the data into json
+    .then(resp => resp.text()) // Transform the data into text
     .then(data => {
-      console.log("Data received")
-      
-      let fileNamePrivate = '.key-store/' + p[0] + '_private_key';
-      let fileNamePublic = '.key-store/' +  p[0] + '_public_key';
+      if (data == "ok"){
+        console.log("Making request to TA for key for user with name " + p[0])
+        console.log("Attributes: " + p[3]);
+        fetch('http://localhost:5000/genKey', {
+        method: 'SEARCH',
+        body:  'name=' + p[0] + '&attributes=' + p[3],
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+        .then(resp => resp.json()) // Transform the data into json
+        .then(data => {
+          console.log("Data received")
+          
+          let fileNamePrivate = '.key-store/' + p[0] + '_private_key';
+          let fileNamePublic = '.key-store/' +  p[0] + '_public_key';
 
-      fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
-      fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
+          fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
+          fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
 
-      res.send("KEY-OK")
+          res.send({status: "KEY-OK", id: data.id})
+        }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
+      }else{
+      res.send("Error");
+    }
     }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
   })
+
   .get('/add_data/:p', function (req, res){
     var p = req.params.p.split("-");
     console.log(p)
@@ -73,7 +90,7 @@ module.exports = function(app){
           });
           
     let enc_data = fs.readFileSync(enc_file, 'hex');
-    
+
     fetch('http://localhost:4000/data', {
       method: 'POST',
       body:    'id=' + p[0] + '&type=' + p[2] + '&data=' + enc_data,
@@ -93,8 +110,9 @@ module.exports = function(app){
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
+
   .get('/get_all', function (req, res){
-    fetch('http://localhost:4000/get_all', {
+    fetch('http://localhost:4000/get_all_patients', {
       method: 'GET',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })

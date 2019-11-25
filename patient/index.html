@@ -76,20 +76,13 @@
         </p>
       </div>
       <div class='col-sm-6 form-group'>
-        <label>Select Identity to Request a Key</label>
-        <p>
-          <select name="name" ng-model="key_identity">
-            <option value="Alice">Alice</option>
-            <option value="Bob">Bob</option>
-            <option value="Charles">Charles</option>
-            <option value="Dave">Dave</option>
-            <option value="Eveline">Eveline</option>
-            <option value="Frank">Frank</option>
-          </select>
-        </p>
+        <label>Register a new patient and request keys</label>
+        Enter patient name: <input class="form-control" name="newName" placeholder="Alice" ng-model="user.name">
+        Enter date of birth: <input class="form-control" name="newDate" placeholder="aaaa-mm-gg" ng-model="user.date">
+        Enter address: <input class="form-control" name="newAddress" placeholder="Piet Heinstraat 95, Enschede" ng-model="user.address">
         Enter attributes: <input class="form-control" name="keyAttributes" placeholder="patient,hospital" ng-model="key_attributes">
         <p><input id="keyRequest" type="submit" value="Request Keys" class="btn btn-primary" ng-click="keyRequest()"></p>
-        <h5 style="color:green;margin-bottom:2%" id="success_key">Success! Key received</h5>
+        <h5 style="color:green;margin-bottom:2%" id="success_key">Success! User registered into the system</h5>
         <h5 style="color:red;margin-bottom:2%" id="error_key">Error: Something went wrong. </h5>
       </div>
     </div>
@@ -103,19 +96,19 @@
       <table id="phr_to_verify" class="table" align="center">
 
         <tr>
-          <th>Patient ID</th>
           <th>From</th>
           <th>Date</th>
           <th>Type</th>
           <th>Data</th>
+          <th>Verify</th>
         </tr> 
 
         <tr ng-repeat="phr in phr_to_verify">
-          <td>{{phr.id}}</td>
           <td>{{phr.uploaderName}}</td>
           <td>{{phr.uploadDate}}</td>
           <td>{{phr.type}}</td>
           <td>{{phr.info}}</td>
+          <td><input type="checkbox" ng-model="phr.to_verify"/></td>
         </tr>
       </table>
 
