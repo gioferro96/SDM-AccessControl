@@ -8,26 +8,10 @@ app.controller('appController', function($scope, appFactory){
 
 	$("#success_get_phr").hide();
 	$("#error_get_phr").hide();
-
-	$scope.keyRequest = function(){
-
-		console.log("Inside keyRequest of app.js function");
-
-		appFactory.keyRequest(function(data){
-			console.log(data)
-			if (data == "KEY-OK"){
-				$("#success_key").show();
-				$("#error_key").hide();
-			}else{
-				$("#error_key").show();
-				$("#success_key").hide();
-			}
-		});
-	}
 	
 	$scope.sendClientData = function(){
 
-		console.log("Inside getClientData of actors app.js")
+		console.log("Inside sendClientData of actors app.js")
 		var req_upname = $scope.phr_upname;
 		var req_uname = $scope.phr_uname;
 		var req_type = $scope.phr_type;
@@ -47,13 +31,6 @@ app.controller('appController', function($scope, appFactory){
 app.factory('appFactory', function($http){
 	
 	var factory = {};
-
-	factory.keyRequest = function(callback){
-		console.log('Inside keyRequest factory function')
-    	$http.get('http://localhost:5003/get_pub_key').success(function(output){
-			callback(output)
-		});
-	}
 
 	factory.sendClientData = function(upname, uname, type, info, callback){
 		console.log('Inside getClientData factory function')
