@@ -231,10 +231,8 @@ app.route('/user')
 		let addr = req.body.address;
 		let cat = req.body.category;
 		let dob = req.body.dob;
-		let id = null;
-		while (ids.includes(id)){
-			id = getRndInteger(1,65000);
-		}
+		let id = checkid();
+		console.log(id);
 		let sql = "insert into users value("+id+", '"+uname+"', '"+dob+"', '"+addr+"', '"+cat+"')";
 		console.log(sql);
 		con.query(sql, function(err,result) {
@@ -252,7 +250,14 @@ app.route('/user')
 	});
 
 app.listen(port);
-
+function checkid(){
+	let id = 0;
+	while (true){
+		id = getRndInteger(1,65000);
+		if(!ids.includes(id)) return id;
+	}
+	
+}
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
