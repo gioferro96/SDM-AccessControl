@@ -208,10 +208,10 @@ app.route('/tempData')
 		}
 	});
 
-app.route('/get_all')
+	app.route('/get_all_patients')
 	.get((req,res) => {
 		console.log("Request for get all")
-		let sql = "select id,name from users";
+		let sql = "select id,name from users where category='patient'";
 			con.query(sql, function (err, result) {
 				if (err){
 					res.statusCode = 500;

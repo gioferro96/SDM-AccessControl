@@ -94,7 +94,7 @@ module.exports = function(app){
     .catch(err => console.log("Error: Status Code = " + err))
   })
   .get('/get_all', function (req, res){
-    fetch('http://localhost:4000/get_all', {
+    fetch('http://localhost:4000/get_all_patients', {
       method: 'GET',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
