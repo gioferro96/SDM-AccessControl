@@ -59,7 +59,7 @@ app.route('/data')
 					
 					if(type != null){
 						let types = type.split(",");
-						let sql = "select info from data where userid="+id+" AND type='"+types[0]+"'";
+						let sql = "select uploadDate, type, info from data where userid="+id+" AND type='"+types[0]+"'";
 						for (i = 1; i < types.length; i++){
 							sql += " OR type='"+types[i]+"'";
 						}
@@ -76,7 +76,7 @@ app.route('/data')
 							}
 						});
 					}else{
-						let sql = "select info from data where userid="+id;
+						let sql = "select uploadDate, type, info from data where userid="+id;
 						con.query(sql, function (err, result) {
 							if (err){
 								res.statusCode = 500;
