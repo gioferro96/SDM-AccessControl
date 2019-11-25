@@ -28,7 +28,7 @@ CREATE TABLE `data` (
   `userid` int(11) NOT NULL,
   `uploadDate` date DEFAULT NULL,
   `type` varchar(20) DEFAULT NULL,
-  `info` varchar(400) DEFAULT NULL,
+  `info` varchar(2048) DEFAULT NULL,
   KEY `userid` (`userid`),
   CONSTRAINT `data_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -56,7 +56,7 @@ CREATE TABLE `tempData` (
   `uploaderName` varchar(40) NOT NULL,
   `uploadDate` date DEFAULT NULL,
   `type` varchar(20) DEFAULT NULL,
-  `info` varchar(400) DEFAULT NULL
+  `info` varchar(2048) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
