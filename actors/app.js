@@ -1,7 +1,24 @@
 var app = angular.module('application', []);
 
+app.run(['$rootScope', '$http', function($rootScope, $http) {
+	var req = {
+		method: 'GET',
+		url: 'http://localhost:5001/get_all/',
+		headers: {'Access-Control-Allow-Origin': '*'}
+	};
+	console.log('Running request');
+	
+	$http(req).then(function(response){
+		console.log(response);
+		
+		$rootScope.users_list = response.data;
+
+	}).catch(err => console.log(err))
+	
+}]);
+
 // Angular Controller
-app.controller('appController', function($scope, appFactory){
+app.controller('appController', function($rootScope, $scope, appFactory){
 
 	$("#success_key").hide();
 	$("#error_key").hide();
@@ -12,15 +29,17 @@ app.controller('appController', function($scope, appFactory){
 	$scope.keyRequest = function(){
 
 		console.log("Inside keyRequest of app.js function");
-		var key_req = $scope.key_identity;
 		var attr = $scope.key_attributes;
+		var user = $scope.user;
 
-		appFactory.keyRequest(key_req, attr, function(data){
-			console.log(data)
-			if (data == "KEY-OK"){
-				$("#success_key").show();
+		appFactory.keyRequest(user, attr, function(data){
+			console.log(data.status);
+			if (data.status == "KEY-OK"){
+				$("#success_key").show(); 
 				$("#error_key").hide();
+				$rootScope.users_list.push({id: data.id, name: user.name});
 			}else{
+				console.log(data);
 				$("#error_key").show();
 				$("#success_key").hide();
 			}
@@ -46,15 +65,20 @@ app.factory('appFactory', function($http){
 	
 	var factory = {};
 
-	factory.keyRequest = function(identity, attr, callback){
+	factory.keyRequest = function(user, attr, callback){
 		console.log('Inside keyRequest factory function')
-		console.log(identity);
+		console.log(user.role);
+		console.log(user.name);
+		console.log(user.address);
+		console.log(user.date);
 		console.log(attr);
-		params = identity + "-" + attr;
+		
+		params = user.name + "," + user.address + "," + user.date + "," + user.role + "," + attr;
 		
     	$http.get('http://localhost:5002/get_key/'+params).success(function(output){
 			callback(output)
 		});
+
 	}
 
 	factory.getClientData = function(identity, callback){

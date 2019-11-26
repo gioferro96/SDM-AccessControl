@@ -132,7 +132,8 @@ module.exports = function(app){
   .get('/get_all', function (req, res){
     fetch('http://localhost:4000/get_all_patients', {
       method: 'GET',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Access-Control-Allow-Origin': '*'},
     })
     .then(checkStatus(res))
     .then(resp => resp.json()) // Transform the data into json
