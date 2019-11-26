@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 var fs = require('fs')
+var cors = require('cors')
 
 function checkStatus(res) {
   if (res.statusCode >= 200 && res.statusCode < 300) { // res.status >= 200 && res.status < 300
@@ -12,7 +13,7 @@ function checkStatus(res) {
 }
 
 module.exports = function(app){
-
+  app.use(cors());
   app.get('/get_data_to_verify/:id', function (req, res){
     console.log("Making reques for tempData with id " + req.params.id)
     fetch('http://localhost:4000/tempData', {

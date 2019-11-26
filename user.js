@@ -2,9 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path')
 const app = express();
+const cors = require('cors')
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const { execSync } = require('child_process');
 execSync('rm -r .key-store; mkdir .key-store', (err, stdout, stderr) => {
@@ -15,7 +14,7 @@ execSync('rm -r .key-store; mkdir .key-store', (err, stdout, stderr) => {
 });
 
 require('./routes.js')(app);
-
+app.use(cors());
 app.use(express.static(path.join(__dirname, './patient')));
 
 const port = 5001;

@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
   <head>
-    <title>Actors Home Page</title>
+    <title>Write Actors Home Page</title>
 
     <!-- require jquery and bootstrap scripts -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -89,11 +89,11 @@
       <tr>
         <td>
           <p>
-          <select name="name" ng-model="phr_uname">
-            <option value="damiano">Dustin</option>
-            <option value="11">Edward</option>
-            <option value="Isable">Isabel</option>
+          <p>
+          <select name="identity" ng-model="phr_uname" ng-cloak>
+              <option ng-repeat="user in users_list" value="{{user.id}},{{user.name}}">{{user.name}}</option>
           </select>
+        </p>
           </p>
         </td>
         <td><input class="form-control" name="phrType" placeholder="e.g., check" ng-model="phr_type"></td>

@@ -49,7 +49,9 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 	$scope.getClientData = function(){
 
 		console.log("Inside getClientData of actors app.js")
-		var req_target = $scope.request_target;
+		var req_target = $scope.request_target.split(",");
+		req_target = req_target[1];
+		console.log(req_target)
 
 		appFactory.getClientData(req_target, function(data){
 			console.log(data);
