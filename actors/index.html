@@ -70,25 +70,24 @@
       <div class='col-sm-6'>
         <label>Select Identity</label>
         <p>
-          <select name="identity" ng-model="request_identity">
-            <option value="doc">Doctor</option>
-            <option value="emp">Employer</option>
-            <option value="ins">Insurance</option>
+          <select name="identity" ng-model="request_identity" ng-cloak>
+              <option ng-repeat="user in users_list" value="{{user.id}},{{user.name}}">{{user.name}}</option>
           </select>
         </p>
       </div>
       <div class='col-sm-6 form-group'>
-        <label>Select Identity to Request a Key</label>
-        <p>
-          <select name="name" ng-model="key_identity">
-            <option value="damiano">Dustin</option>
-            <option value="Edward">Edward</option>
-            <option value="Isable">Isabel</option>
+        <label>Register a new actor and request keys</label>
+        Enter actor role: <select name="newRole" ng-model="user.role">
+            <option value="doctor" selected="selected">Doctor</option>
+            <option value="employer">Employer</option> 
+            <option value="insurer">Insurer</option>
           </select>
-        </p>
+        Enter actor name: <input class="form-control" name="newName" placeholder="Alice" ng-model="user.name">
+        Enter date of birth: <input class="form-control" name="newDate" placeholder="aaaa-mm-gg" ng-model="user.date">
+        Enter address: <input class="form-control" name="newAddress" placeholder="Piet Heinstraat 95, Enschede" ng-model="user.address">
         Enter attributes: <input class="form-control" name="keyAttributes" placeholder="doctor, employer, insurance" ng-model="key_attributes">
         <p><input id="keyRequest" type="submit" value="Request Keys" class="btn btn-primary" ng-click="keyRequest()"></p>
-        <h5 style="color:green;margin-bottom:2%" id="success_key">Success! Key received</h5>
+        <h5 style="color:green;margin-bottom:2%" id="success_key">Success! User registered into the system</h5>
         <h5 style="color:red;margin-bottom:2%" id="error_key">Error: Something went wrong. </h5>
       </div>
     </div>

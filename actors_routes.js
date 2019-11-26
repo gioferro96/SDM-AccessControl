@@ -3,7 +3,7 @@ var fs = require('fs')
 
 function checkStatus(res) {
   if (res.statusCode >= 200 && res.statusCode < 300) { // res.status >= 200 && res.status < 300
-      return res;
+      return res;s
   } else {
       console.log("Thowing error for status code: " + res.statusCode)
       throw Error(res.statusCode);
@@ -29,49 +29,45 @@ module.exports = function(app){
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
-  .get('/get_key/:p', function(req, res){
-    var p = req.params.p.split("-");
+  
+  .get('/get_key/:p', function(req, res){2
+    res.header("Access-Control-Allow-Origin", "*");
+    var p = req.params.p.split(",");
     console.log(p)
-    console.log("Making request for genKey with name " + p[0])
-    console.log("Attributes: " + p[1]);
-    fetch('http://localhost:5000/genKey', {
-      method: 'SEARCH',
-      body:  'name=' + p[0] + '&attributes=' + p[1],
+    console.log("Making request to DB for user with name " + p[0])
+    console.log("Attributes: " + p[4]);
+    fetch('http://localhost:4000/user', {
+      method: 'POST',
+      body:  'name=' + p[0] + '&address=' + p[1] + '&dob=' + p[2] + '&category=' + p[3],
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
-    .then(checkStatus(res))
-    .then(resp => resp.json()) // Transform the data into json
+    .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+    .then(resp => resp.text()) // Transform the data into text
     .then(data => {
-      console.log("Data received")
-      
-      let fileNamePrivate = '.key-store/' + p[0] + '_private_key';
-      let fileNamePublic = '.key-store/' +  p[0] + '_pubic_key';
+      if (data == "ok"){
+        console.log("Making request to TA for key for user with name " + p[0])
+        console.log("Attributes: " + p[4]);
+        fetch('http://localhost:5000/genKey', {
+        method: 'SEARCH',
+        body:  'name=' + p[0] + '&attributes=' + p[4],
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+        .then(resp => resp.json()) // Transform the data into json
+        .then(data => {
+          console.log("Data received")
+          
+          let fileNamePrivate = '.key-store/' + p[0] + '_private_key';
+          let fileNamePublic = '.key-store/' +  p[0] + '_public_key';
 
-      fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
-      fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
+          fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
+          fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
 
-      res.header("Access-Control-Allow-Origin", "*");
-      res.send("KEY-OK")
+          res.send({status: "KEY-OK", id: data.id})
+        }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
+      }else{
+      res.send("Error");
+    }
     }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
-    .catch(err => console.log("Error: Status Code = " + err))
   });
-  /*
-  app.get('/get_ehr/:parameters', function(req, res){
-    abac.get_ehr(req, res);
-  });
-  app.get('/add_ehr/:ehr', function(req, res){
-    abac.add_ehr(req, res);
-  });
-  app.get('/get_all_state/:parameters', function(req, res){
-    abac.get_all_state(req, res);
-  });
-  app.get('/update_ehr/:ehr', function(req, res){
-    abac.update_ehr(req, res);
-  });
-  app.get('/update_consent/:ehr', function(req, res){
-    abac.update_consent(req, res);
-  });
-  app.get('/track_ehr/:ehr', function(req, res){
-    abac.track_ehr(req, res);
-  });*/
 }

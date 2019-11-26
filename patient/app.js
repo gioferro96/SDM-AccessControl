@@ -3,7 +3,8 @@ var app = angular.module('application', []);
 app.run(['$rootScope', '$http', function($rootScope, $http) {
 	var req = {
 		method: 'GET',
-		url: 'http://localhost:5001/get_all/'
+		url: 'http://localhost:5001/get_all/',
+		headers: {'Access-Control-Allow-Origin': '*'}
 	};
 	console.log('Running request');
 	
