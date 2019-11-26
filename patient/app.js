@@ -69,18 +69,21 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 		list_selected = [];
 		console.log("Inside verifyData of app.js function");
 		var req_identity = $scope.request_identity.split(',')[0];
+		var name = $scope.request_identity.split(',')[1];
 		var policy = $scope.attribute_list; 
 		console.log(req_identity);
+		console.log(name);
 		for(var i = 0; i < $scope.phr_to_verify.length; i++){
 			//console.log('Checking item ' + i + ' - Checkebox is ' + $scope.phr_to_verify[i].isToVerify);
 			if($scope.phr_to_verify[i].isToVerify == true){
 				//console.log('Item is true, pushing in the list')
-				list_selected.push($scope.phr_to_verify[i].id);
+				list_selected.push($scope.phr_to_verify[i]);
 			}
 		}
 		console.log(list_selected);
+		console.log(policy);
 
-		appFactory.verifyData(req_identity, list_selected, policy, function(data){
+		appFactory.verifyData(req_identity, name, list_selected, policy, function(data){
 			console.log(data);
 			console.log(data.length)
 			$scope.phr_to_verify = data;
@@ -134,16 +137,12 @@ app.factory('appFactory', function($http){
 		});
 	}
 
-	factory.verifyData = function(identity, selected, policy, callback){
+	factory.verifyData = function(identity, name, selected, policy, callback){
 		console.log('Inside verifyData factory function')
-		//console.log(identity);
-		var params = identity + '-' + policy;
-		for (var i = 0; i < selected.length; i++){
-			params += '-' + selected[i];
-		}
+		var params = {id: identity, name:name, policy: policy, verify: selected}
 		console.log(params);
 
-    	$http.get('http://localhost:5001/verify_data/'+params).success(function(output){
+    	$http.post('http://localhost:5001/verify_data', params).success(function(output){
 			callback(output)
 		});
 	}
