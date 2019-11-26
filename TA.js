@@ -9,13 +9,13 @@ var port = 5000;
 let pubkey = "";
 //setup system call --> cpabe-setup
 const { exec } = require('child_process');
-exec('cpabe-setup', (err, stdout, stderr) => {
+exec('cpabe-setup && rm -r .key-store && mkdir .key-store && mv pub_key ./.key-store/', (err, stdout, stderr) => {
 	if (err) {
 		// node couldn't execute the command
 		return;
 	}
 	let fs = require('fs');
-	let filename = "pub_key";
+	let filename = "./.key-store/pub_key";
 	pubkey = fs.readFileSync(filename, 'hex');
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);
@@ -24,7 +24,7 @@ exec('cpabe-setup', (err, stdout, stderr) => {
 });
 
 app.route('/genKey')
-	.search((req,res)=>{
+	.search((req,res)=>{ 
 		let name = req.body.name;
 		let attr = req.body.attributes;
 		console.log(name+" "+attr);

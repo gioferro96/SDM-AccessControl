@@ -3,7 +3,7 @@ var app = angular.module('application', []);
 app.run(['$rootScope', '$http', function($rootScope, $http) {
 	var req = {
 		method: 'GET',
-		url: 'http://localhost:5001/get_all/',
+		url: 'http://localhost:5003/get_patients/',
 		headers: {'Access-Control-Allow-Origin': '*'}
 	};
 	console.log('Running request');
@@ -30,11 +30,12 @@ app.controller('appController', function($scope, appFactory){
 
 		console.log("Inside sendClientData of actors app.js")
 		var req_upname = $scope.phr_upname;
-		var req_uname = $scope.phr_uname;
+		var req_id = $scope.phr_uname.split(',')[0];
+		var req_uname = $scope.phr_uname.split(',')[1];
 		var req_type = $scope.phr_type;
 		var req_info = $scope.phr_info;
 
-		appFactory.sendClientData(req_upname, req_uname, req_type, req_info, function(data){
+		appFactory.sendClientData(req_upname, req_id, req_uname, req_type, req_info, function(data){
 			
 			console.log("Fatto");
 		});
@@ -47,9 +48,9 @@ app.factory('appFactory', function($http){
 	
 	var factory = {};
 
-	factory.sendClientData = function(upname, uname, type, info, callback){
+	factory.sendClientData = function(upname, id, uname, type, info, callback){
 		console.log('Inside getClientData factory function')
-		params = upname + "-" + uname + "-" + type + "-" + info;
+		params = upname + "-" + id + "-" + uname + "-" + type + "-" + info;
 		$http.get('http://localhost:5003/send_client_data/'+params).success(function(output){
 			callback(output)
 		});
