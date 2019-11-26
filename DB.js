@@ -131,7 +131,7 @@ app.route('/tempData')
 	.search((req,res)=>{
 		let id = req.body.id;
 		if(id != null){
-			let sql = "select uploaderName, uploadDate, type, info from tempData where userid="+id;
+			let sql = "select id, uploaderName, uploadDate, type, info from tempData where userid="+id;
 			con.query(sql, function (err,result) {
 				if(err){
 					res.statusCode = 500;
@@ -185,11 +185,9 @@ app.route('/tempData')
 	})
 	.delete((req,res)=>{
 		let id = req.body.id;
-		let upname = req.body.uploadername;
-		//check type is unique
-		let data = req.body.data;
-		if((upname != null)&&(id != null)&&(data != null)){
-			let sql = "delete from tempData where userid="+id+" and uploaderName='"+upname+"' and info='"+data+"'";
+
+		if(id != null){
+			let sql = "delete from tempData where id="+id;
 			con.query(sql, function (err, result) {
 				if (err){
 					res.statusCode = 500;
@@ -204,7 +202,7 @@ app.route('/tempData')
 		}else{
 			res.statusCode = 500;
 			res.setHeader('Content-Type', 'plain/text');
-			res.send("Error: missing information in the request (uploadername, userid, data)");
+			res.send("Error: missing information in the request (id)");
 		}
 	});
 
