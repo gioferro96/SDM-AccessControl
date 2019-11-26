@@ -33,10 +33,10 @@ module.exports = function(app){
   })
 
   .post('/get_key/', function(req, res){
-    var name = req.body.name;
-    var address = req.body.address;
-    var dob = req.body.dob;
-    var attributes = req.body.attributes;
+    var name = req.query.name;
+    var address = req.query.address;
+    var dob = req.query.dob;
+    var attributes = req.query.attributes;
     console.log("Making request to DB for user with name " + name);
     console.log(name, address, dob, attributes);
 
@@ -61,7 +61,7 @@ module.exports = function(app){
         .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
         .then(resp => resp.json()) // Transform the data into json
         .then(data => {
-          console.log("Data received")
+          console.log("Data received");
           
           // create private key and write to key-store
           let fileNamePrivate = '.key-store/' + name + '_private_key';
@@ -70,7 +70,7 @@ module.exports = function(app){
           fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
           fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
 
-          res.send({status: "KEY-OK", id: data.id})
+          res.send({status: "KEY-OK", id: data.id});
         }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
         .catch(err => {console.log('Public Key already exist, not writing again'); res.send({status: "KEY-OK", id: data.id})})
       }else{
@@ -81,11 +81,11 @@ module.exports = function(app){
 
   // add data to the PHR of the specified user
   .post('/add_data/', function (req, res){
-    var id = req.body.id;
-    var name = req.body.name;
-    var type = req.body.type;
-    var info = req.body.data;
-    var policy = req.body.policy;
+    var id = req.query.id;
+    var name = req.query.name;
+    var type = req.query.type;
+    var info = req.query.data;
+    var policy = req.query.policy;
     console.log("Making request to DB for user with name " + name);
     console.log(id, name, type, info, policy);
     
@@ -134,10 +134,10 @@ module.exports = function(app){
   // verify temporary data 
   .post('/verify_data/', function (req, res){
     const { execSync } = require('child_process');
-    var id = req.body.id;
-    var name = req.body.name
-    var policy = req.body.policy;
-    var verify = req.body.verify;
+    var id = req.query.id;
+    var name = req.query.name
+    var policy = req.query.policy;
+    var verify = req.query.verify;
 
     console.log(id, policy, verify);
     

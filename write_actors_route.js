@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
-var fs = require('fs')
+var fs = require('fs');
+var cors = require('cors');
 
 function checkStatus(res) {
   if (res.statusCode >= 200 && res.statusCode < 300) { // res.status >= 200 && res.status < 300
@@ -11,6 +12,8 @@ function checkStatus(res) {
 }
 
 module.exports = function(app){
+
+  app.use(cors());
 
   app.get('/send_client_data/:p', function (req, res){
     

@@ -38,12 +38,13 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 		var attr = $scope.key_attributes;
 		var user = $scope.user;
 
-		appFactory.keyRequest(attr, user, function(data){
-			console.log(data.status)
-			if (data.status == "KEY-OK"){
+		appFactory.keyRequest(attr, user, function(res){
+			console.log(res.status)
+			console.log(res);
+			if (res.status == 200 && res.data.status == "KEY-OK"){
 				$("#success_key").show();
 				$("#error_key").hide();
-				$rootScope.users_list.push({id: data.id, name: user.name});
+				$rootScope.users_list.push({id: res.data.id, name: user.name});
 			}else{
 				$("#error_key").show();
 				$("#success_key").hide();
@@ -95,9 +96,9 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 		var req_identity = $scope.request_identity.split(',')[0];
 		var req_name = $scope.request_identity.split(',')[1];
 
-		appFactory.addPHRData($scope.phr, req_identity, req_name, function(data){
-			console.log(data)
-			if (data == "WRITE-OK"){
+		appFactory.addPHRData($scope.phr, req_identity, req_name, function(res){
+			console.log(res)
+			if (res.status==200 && res.data == "WRITE-OK"){
 				$("#success_add_phr").show();
 				$("#error_add_phr").hide();
 			}else{
@@ -122,10 +123,16 @@ app.factory('appFactory', function($http){
 		console.log(attr);
 
 		params = {name: user.name, address: user.address, dob: user.date, attributes: attr};
+		console.log(params);
 		
-    	$http.post('http://localhost:5001/get_key', params).success(function(output){
+		$http({
+			method: 'POST',
+			url: 'http://localhost:5001/get_key/',
+			params: params
+		}).then(function(output){
 			callback(output)
-		});
+		})
+
 	}
 
     factory.getDataToVerify = function(identity, callback){
@@ -142,9 +149,13 @@ app.factory('appFactory', function($http){
 		var params = {id: identity, name:name, policy: policy, verify: selected}
 		console.log(params);
 
-    	$http.post('http://localhost:5001/verify_data', params).success(function(output){
+		$http({
+			method: 'POST',
+			url: 'http://localhost:5001/verify_data/',
+			params: params
+		}).then(function(output){
 			callback(output)
-		});
+		})
 	}
 
 	factory.addPHRData = function(data, identity, name, callback){
@@ -152,10 +163,13 @@ app.factory('appFactory', function($http){
 		params = {id: identity, name: name, type: data.type, data: data.data, policy: data.new_attribute_list};
 		console.log(params);
 
-    	$http.post('http://localhost:5001/add_data/', params).success(function(output){
+		$http({
+			method: 'POST',
+			url: 'http://localhost:5001/add_data/',
+			params: params
+		}).then(function(output){
 			callback(output)
-
-		});
+		})
 	}
 
 	return factory;
