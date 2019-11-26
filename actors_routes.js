@@ -10,7 +10,7 @@ function checkStatus(res) {
       throw Error(res.statusCode);
   }
 }
-
+ 
 module.exports = function(app){
   app.use(cors());
   app.get('/get_client_data/:id', function (req, res){
@@ -70,5 +70,35 @@ module.exports = function(app){
       res.send("Error");
     }
     }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
+  })
+  .get('/get_patients', function (req, res){
+    fetch('http://localhost:4000/get_all_patients', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Access-Control-Allow-Origin': '*'},
+    })
+    .then(checkStatus(res))
+    .then(resp => resp.json()) // Transform the data into json
+    .then(data => {
+      console.log("Data received")
+      console.log(data)
+      res.send(data)
+    }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+    .catch(err => console.log("Error: Status Code = " + err))
+  })
+  .get('/get_actors', function (req, res){
+    fetch('http://localhost:4000/get_all_actors', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Access-Control-Allow-Origin': '*'},
+    })
+    .then(checkStatus(res))
+    .then(resp => resp.json()) // Transform the data into json
+    .then(data => {
+      console.log("Data received")
+      console.log(data)
+      res.send(data)
+    }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+    .catch(err => console.log("Error: Status Code = " + err))
   });
 }

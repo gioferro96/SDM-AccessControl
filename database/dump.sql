@@ -52,12 +52,12 @@ DROP TABLE IF EXISTS `tempData`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tempData` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
   `uploaderName` varchar(40) NOT NULL,
   `uploadDate` date DEFAULT NULL,
   `type` varchar(20) DEFAULT NULL,
   `info` text,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -66,11 +66,6 @@ CREATE TABLE `tempData` (
 -- Dumping data for table `tempData`
 --
 
-LOCK TABLES `tempData` WRITE;
-/*!40000 ALTER TABLE `tempData` DISABLE KEYS */;
-INSERT INTO `tempData` VALUES (11,'hospital1','2019-11-21','check','feels tired, better to sleep a lot tomorrow',1);
-/*!40000 ALTER TABLE `tempData` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `users`

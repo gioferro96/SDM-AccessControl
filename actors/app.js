@@ -3,15 +3,27 @@ var app = angular.module('application', []);
 app.run(['$rootScope', '$http', function($rootScope, $http) {
 	var req = {
 		method: 'GET',
-		url: 'http://localhost:5001/get_all/',
-		headers: {'Access-Control-Allow-Origin': '*'}
+		url: 'http://localhost:5002/get_patients/'
+		//headers: {'Access-Control-Allow-Origin': '*'}
+	};
+	var reqAct = {
+		method: 'GET',
+		url: 'http://localhost:5002/get_actors/'
+		//headers: {'Access-Control-Allow-Origin': '*'}
 	};
 	console.log('Running request');
-	
+
 	$http(req).then(function(response){
 		console.log(response);
 		
 		$rootScope.users_list = response.data;
+
+	}).catch(err => console.log(err))
+
+	$http(reqAct).then(function(response){
+		console.log(response);
+		
+		$rootScope.actors_list = response.data;
 
 	}).catch(err => console.log(err))
 	

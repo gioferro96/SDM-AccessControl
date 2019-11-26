@@ -166,8 +166,8 @@ app.route('/tempData')
 				}else{
 					let id = result[0].id;
 					var dt = new Date();
-					let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-					let sql2 = "insert into tempData values ("+id+", '"+upname+"', '"+today+"', '"+type+"', '"+data+"')";
+					let today = dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+					let sql2 = "insert into tempData (userid, uploaderName, uploadDate, type, info) values ("+id+", '"+upname+"', '"+today+"', '"+type+"', '"+data+"')";
 					console.log(sql2);
 					con.query(sql2, function (err, result) {
 						if(err) throw err;

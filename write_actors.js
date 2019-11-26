@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path')
 const app = express();
+const cors = require('cors')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ const { execSync } = require('child_process');
 });*/
 
 require('./write_actors_route.js')(app);
-
+app.use(cors());
 app.use(express.static(path.join(__dirname, './write_actors')));
 
 const port = 5003;
