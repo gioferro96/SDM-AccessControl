@@ -94,6 +94,7 @@ module.exports = function(app){
     let enc_file = 'enc_file';
     fs.writeFileSync(to_encrypt, info, 'hex');
 
+    // run encryption
     const { execSync } = require('child_process');
     console.log("Executing command");
     execSync('cpabe-enc -o ' + enc_file + ' .key-store/public_key ' + to_encrypt + ' ' + actual_policy, (err, stdout, stderr) => {
@@ -107,6 +108,7 @@ module.exports = function(app){
           
     let enc_data = fs.readFileSync(enc_file, 'hex');
 
+    // add encrypted phr to the database
     fetch('http://localhost:4000/data', {
       method: 'POST',
       body:    'id=' + id + '&type=' + type + '&data=' + enc_data,
