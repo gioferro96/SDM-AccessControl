@@ -19,6 +19,9 @@
       header, .form-group{
         margin-bottom: 3%;
       }
+      .large{
+        width:100% !important;
+      }
       .form-group{
         width:50%;
       }
@@ -30,7 +33,6 @@
         margin: 8px;
       }
       #right_header{
-        width:20%;
         font-size:15px;
         margin-right:0px;
       }
@@ -38,7 +40,12 @@
         margin-left:0;
         width:40%;
         display:inline-block;
-      } 
+      }
+      .last_header{
+        margin-right:0;
+        display:inline-block;
+        align-content: right;
+      }
       #id {
         width:49%;
         display: inline-block;
@@ -59,9 +66,10 @@
     </style>
   </head>
   <body ng-app="application" ng-controller="appController">
-    <header>
-      <div id="left_header">Secure Data Management</div>
-      <i id="right_header">Cryptographically Enforced Access Control - Group 6</i>
+    <header class=row>
+      <div class=col-sm-4>Secure Data Management</div>
+      <div class=col-sm-5><i id='right_header'>Cryptographically Enforced Access Control - Group 6</i></div>
+      <div class=col-sm-3 id='last_header'>Patient Application</div>
     </header>
 
     <div id="body">
@@ -76,7 +84,7 @@
         </p>
       </div>
       <div class='col-sm-6 form-group'>
-        <label>Register a new patient and request keys</label>
+        <label>Register a new patient and request keys</label><br>
         Enter patient name: <input class="form-control" name="newName" placeholder="Alice" ng-model="user.name">
         Enter date of birth: <input class="form-control" name="newDate" placeholder="aaaa-mm-gg" ng-model="user.date">
         Enter address: <input class="form-control" name="newAddress" placeholder="Piet Heinstraat 95, Enschede" ng-model="user.address">
@@ -92,29 +100,31 @@
         <label>Look for data to verify</label>
         <p><input id="getDataToVerify" type="submit" value="Dowload" class="btn btn-primary" ng-click="getDataToVerify()"></p>
       </div>
- 
-      <table id="phr_to_verify" class="table" align="center">
+      
+      <div class='form-group large'>
+        <table id="user_phr_to_verify" class="table" align="center">
 
-        <tr>
-          <th>From</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Data</th>
-          <th>Verify</th>
-        </tr> 
+          <tr>
+            <th>From</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Data</th>
+            <th>Verify</th>
+          </tr> 
 
-        <tr ng-repeat="phr in phr_to_verify">
-          <td>{{phr.uploaderName}}</td>
-          <td>{{phr.uploadDate}}</td>
-          <td>{{phr.type}}</td>
-          <td>{{phr.info}}</td>
-          <td><input type="checkbox" ng-model="phr.to_verify"/></td>
-        </tr>
-      </table>
+          <tr ng-repeat="phr in phr_to_verify">
+            <td>{{phr.uploaderName}}</td>
+            <td>{{phr.uploadDate}}</td>
+            <td>{{phr.type}}</td>
+            <td>{{phr.info}}</td>
+            <td><input type="checkbox" ng-model='phr.toVerify' ng-checked="phr.isToVerify" ng-click="toggleSelection(phr)"/></td>
+          </tr>
+        </table>
 
-      <div class="form-group">
-        <label>Verify data</label>
-        <p><input id="getDataToVerify" type="submit" value="Verify" class="btn btn-primary" ng-click="getDataToVerify()"></p>
+      
+        <label>Verify data</label><br>
+        Enter policy attributes: <input class="form-control" placeholder="Ex: Enschede and Hospital" ng-model="phr.attribute_list">
+        <p><input id="getDataToVerify" type="submit" value="Verify" class="btn btn-primary" ng-click="verifyData()"></p>
         <h5 style="color:green;margin-bottom:2%" id="success_verify_phr">Success! New data has been correcly verified</h5>
         <h5 style="color:red;margin-bottom:2%" id="error_verify_phr">Error: Something went wrong. </h5>
       </div>
@@ -128,6 +138,7 @@
         <!--Enter ID: <input class="form-control" name="IDtoAdd" placeholder="Ex: Luis" ng-model="phr.id">-->
         Enter record type: <input class="form-control" name="toAdd" placeholder="Ex: Prescription" ng-model="phr.type">
         Enter data: <input class="form-control" type="text" placeholder="Ex: Prescription for arnica gel due to ankle sprain, 5 days, 3 times a day" ng-model="phr.data">
+        Enter policy attributes: <input class="form-control" placeholder="Ex: Enschede and Hospital" ng-model="phr.new_attribute_list">
         <input id="addData" type="submit" value="Upload" class="btn btn-primary" ng-click="addPHRData()">
       </div>
 

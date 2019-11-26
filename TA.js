@@ -62,7 +62,16 @@ app.route('/genKey')
 					res.statusCode = 200;
 					res.setHeader('Content-Type', 'plain/text');
 					res.send(t);
-					//maybe delete the key created
+					
+					let del = "rm "+filename;
+					execSync(del, (err, stdout, stderr) => {
+					  if (err) {
+					    // node couldn't execute the command
+					    //console.log("Error cp-abe: "+err);
+					    return;
+					  }
+					});
+
 				}else{
 					res.statusCode = 500;
 					res.setHeader('Content-Type', 'plain/text');
