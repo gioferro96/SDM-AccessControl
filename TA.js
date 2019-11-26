@@ -15,7 +15,7 @@ exec('cpabe-setup && rm -r .key-store && mkdir .key-store && mv pub_key ./.key-s
 		return;
 	}
 	let fs = require('fs');
-	let filename = "./.key-store/pub_key";
+	let filename = ".key-store/pub_key";
 	pubkey = fs.readFileSync(filename, 'hex');
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);

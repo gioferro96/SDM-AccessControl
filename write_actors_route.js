@@ -26,6 +26,7 @@ module.exports = function(app){
     var type = p[3];
     var info = p[4];
     
+    console.log(policy)
 
     let actual_policy = "'" + policy + "'"
     console.log("Policy: " + actual_policy);
@@ -84,4 +85,20 @@ module.exports = function(app){
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
+
+  .get('/get_wactors', function (req, res){
+    fetch('http://localhost:4000/get_all_write_actors', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                 'Access-Control-Allow-Origin': '*'},
+    })
+    .then(checkStatus(res))
+    .then(resp => resp.json()) // Transform the data into json
+    .then(data => {
+      console.log("Data received")
+      console.log(data)
+      res.send(data)
+    }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+    .catch(err => console.log("Error: Status Code = " + err))
+  });
 }
