@@ -1,10 +1,27 @@
 var app = angular.module('application', []);
 
+app.run(['$rootScope', '$http', function($rootScope, $http) {
+	var req = {
+		method: 'GET',
+		url: 'http://localhost:5001/get_all/',
+		headers: {'Access-Control-Allow-Origin': '*'}
+	};
+	console.log('Running request');
+	
+	$http(req).then(function(response){
+		console.log(response);
+		
+		$rootScope.users_list = response.data;
+
+	}).catch(err => console.log(err))
+	
+}]);
+
 // Angular Controller
 app.controller('appController', function($scope, appFactory){
 
 	$("#success_key").hide();
-	$("#error_key").hide();
+	$("#error_key").hide(); 
 
 	$("#success_get_phr").hide();
 	$("#error_get_phr").hide();
@@ -20,8 +37,6 @@ app.controller('appController', function($scope, appFactory){
 		appFactory.sendClientData(req_upname, req_uname, req_type, req_info, function(data){
 			
 			console.log("Fatto");
-			//console.log(data.length)
-			//$scope.phr_to_get = data;
 		});
 	}
 

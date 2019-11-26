@@ -70,7 +70,7 @@
       <div class='col-sm-6'>
         <label>Select Identity</label>
         <p>
-          <select name="identity" ng-model="request_identity" ng-cloak>
+          <select name="identity" ng-model="request_identityz" ng-cloak>
               <option ng-repeat="user in users_list" value="{{user.id}},{{user.name}}">{{user.name}}</option>
           </select>
         </p>
@@ -96,13 +96,8 @@
       <div class='col-sm-6'>
         <label>Select Target</label>
         <p>
-          <select name="target" ng-model="request_target">
-            <option value="956">Alice</option>
-            <option value="bob">Bob</option>
-            <option value="11">Charles</option>
-            <option value="damiano">Dave</option>
-            <option value="eveline">Eveline</option>
-            <option value="frank">Frank</option>
+          <select name="identity" ng-model="request_target" ng-cloak>
+              <option ng-repeat="user in users_list" value="{{user.id}},{{user.name}}">{{user.name}}</option>
           </select>
         </p>
       </div>

@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 var fs = require('fs')
+var cors = require('cors')
 
 function checkStatus(res) {
   if (res.statusCode >= 200 && res.statusCode < 300) { // res.status >= 200 && res.status < 300
@@ -11,7 +12,7 @@ function checkStatus(res) {
 }
 
 module.exports = function(app){
-
+  app.use(cors());
   app.get('/get_client_data/:id', function (req, res){
     res.header("Access-Control-Allow-Origin", "*");
     console.log("Making reques for tempData with name " + req.params.id)
