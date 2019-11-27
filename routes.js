@@ -123,7 +123,7 @@ module.exports = function(app){
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
     let to_encrypt = 'temp-data';
     let enc_file = 'enc_file';
-    fs.writeFileSync(to_encrypt, info, 'hex');
+    fs.writeFileSync(to_encrypt, info, 'utf8');
 
     // run encryption
     const { execSync } = require('child_process');
