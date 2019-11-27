@@ -100,8 +100,8 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 			}
 			console.log($scope.phr_to_verify);
 			//$scope.phr_to_verify = data;
-
-			if (res.status==200 && res.data == "VERIFY-OK"){
+			console.log(res.data.status);
+			if (res.status==200 && res.data.status == "VERIFY-OK"){
 				$("#success_verify_phr").show();
 				$("#error_verify_phr").hide();
 			}else{

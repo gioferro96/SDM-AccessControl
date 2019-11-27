@@ -117,7 +117,8 @@
             <td>{{phr.uploadDate}}</td>
             <td>{{phr.type}}</td>
             <td>{{phr.info}}</td>
-            <td><input type="checkbox" ng-model='phr.toVerify' ng-checked="phr.isToVerify" ng-click="toggleSelection(phr)"/></td>
+            <td><input type="radio" name="radio-primary" ng-value="true" ng-model="phr.toVerify" ng-checked="phr.isToVerify" ng-change="toggleSelection(phr)" /></td>
+            <!--<td><input type="checkbox" ng-model='phr.toVerify' ng-checked="phr.isToVerify" ng-click="toggleSelection(phr)"/></td>-->
           </tr>
         </table>
 

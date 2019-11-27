@@ -180,8 +180,11 @@ module.exports = function(app){
     let actual_policy = "'" + policy + "'"
     console.log("Policy: " + actual_policy);
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
-    console.log(length);
-    for (var i = 0; i < length; i++){
+
+    console.log('Length of data is:' + length);
+
+    for (var i = 0; i < parseInt(length); i++){
+      console.log(i, parseInt(length));
       let to_encrypt = 'temp_data';
       let enc_file = 'enc_file';
 
@@ -191,11 +194,7 @@ module.exports = function(app){
       }else{
         element = JSON.parse(verify[i]);
       }
-
-
       
-      //console.log('Element info: ' + element.info);
-
       console.log('Info to verify:' + element.info);
       fs.writeFileSync(to_encrypt, element.info, 'utf8');
 
@@ -219,9 +218,10 @@ module.exports = function(app){
                  'Access-Control-Allow-Origin': '*'},
       })
       .then(checkStatus(res, 'Adding verified data to the DB')).catch(err => console.log("Error: Status Code = " + err))
-      .then(resp => resp.text()) // Transform the data into json
-      .then(data => {
-        if (data == "ok"){
+      .then(resp => resp.text()) // Transform the data into text
+      .then(dataDBAdd => {
+
+        if (dataDBAdd == "ok"){
           console.log("Making request to TA for key for user with name " + name)
   
           // delete verified data from database
@@ -231,22 +231,31 @@ module.exports = function(app){
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           })
           .then(checkStatus(res, 'Deleting verified data from temporary storage')).catch(err => console.log("Error: Status Code = " + err))
-          .then(resp => resp.text()) // Transform the data into json
-          .then(data => {
-            console.log("Data deleted from tempData")
-  
-            res.send({status: "VERIFY-OK", id: data.id})
+          .then(resp => resp.text()) // Transform the data into text
+          .then(dataDBDel => {
+
+            if (dataDBDel == 'ok'){
+              console.log("Data deleted from tempData");
+              console.log(i, parseInt(length));
+              if (i != length-1){
+                console.log("Going on with the next one");
+              }else{
+                console.log('Delete from tempData finished');
+              }
+            }else{
+              res.send('Error');
+            }
+
           }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
-          .catch(err => {console.log('Public Key already exist, not writing again'); res.send({status: "KEY-OK", id: data.id})})
+          .catch(err => {console.log('Error'); res.send({status: 'Error'})})
+
         }else{
           res.send("Error");
         }
-        console.log("Data received")
-        console.log(data)
-        res.send(data)
-      }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
-      .catch(err => console.log("Error: Status Code = " + err))
 
+      }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+      .catch(err => console.log("Error: Status Code = " + err));
+      
       // delete temporary files
       let del = "rm " + enc_file + ' ' + to_encrypt;
       /*execSync(del, (err, stdout, stderr) => {
@@ -258,8 +267,8 @@ module.exports = function(app){
       });*/
     }
 
-    res.send("VERIFY-OK");
-    
+    res.send({status: "VERIFY-OK"})
+   
   })
 
   .get('/get_all', function (req, res){
