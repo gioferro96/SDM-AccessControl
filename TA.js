@@ -27,9 +27,9 @@ app.route('/genKey')
 	.search((req,res)=>{ 
 		let name = req.body.name;
 		let attributes = req.body.attributes.split(',');
-		let attr = "'"+name+"' '"+ attributes[0]+"'";
+		let attr = "'"+name+"' '"+ attributes[0].trim()+"'";
 		for (var i = 1; i < attributes.length; i++){
-			attr += " '" + attributes[i]+"'";
+			attr += " '" + attributes[i].trim()+"'";
 		}
 
 		console.log(attr);

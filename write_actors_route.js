@@ -13,6 +13,7 @@ function checkStatus(res) {
 
 module.exports = function(app){
   app.use(cors());
+
   app.get('/send_client_data/:p', function (req, res){
     
     res.header("Access-Control-Allow-Origin", "*");
@@ -36,7 +37,7 @@ module.exports = function(app){
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
     let to_encrypt = 'temp-data';
     let enc_file = 'enc_file';
-    console.log(info)
+    //console.log(info)
     fs.writeFileSync(to_encrypt, info, 'utf8');
 
     // run encryption
@@ -62,7 +63,7 @@ module.exports = function(app){
     .then(checkStatus(res))
     .then(resp => resp.text()) // Transform the data into text
     .then(data => {
-      console.log(data);
+      //console.log(data);
       if(data == "ok"){
         console.log("Data received")
         res.send("WRITE-OK");
@@ -84,8 +85,39 @@ module.exports = function(app){
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
-      console.log(data)
+      //console.log(data)
       res.send(data)
+    }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+    .catch(err => console.log("Error: Status Code = " + err))
+  })
+
+  .post('/add_wactor/', function(req, res){2
+
+    var uname = req.query.name;
+    var address = req.query.address;
+    var date = "2019-09-09";
+    var role = req.query.role;
+
+    console.log("Making request to DB for user with name " + uname)
+    console.log("Role: " + role);
+    console.log(uname, address, date, role)
+
+    fetch('http://localhost:4000/user', {
+      method: 'POST',
+      body:  'name=' + uname + '&address=' + address + '&dob=' + date + '&category=' + role,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+    .then(resp => resp.text()) // Transform the data into text
+    .then(data => {
+      console.log(data);
+      if(data == "ok"){
+        console.log("Data received")
+        res.send("WRITE-OK");
+      }else{
+        console.log("Error");
+        res.send("Error");
+      }
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
@@ -100,7 +132,7 @@ module.exports = function(app){
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
-      console.log(data)
+      //console.log(data)
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
