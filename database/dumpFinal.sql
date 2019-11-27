@@ -95,7 +95,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (20,'MSTHospital',NULL,'Enschede','hospital'),(21,'Best Health Club',NULL,'Henghelo','health club');
+INSERT INTO `users` VALUES (20,'MSTHospital',NULL,'Enschede','hospital'),(21,'Best Health Club',NULL,'Henghelo','healthclub');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
