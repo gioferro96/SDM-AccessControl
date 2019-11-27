@@ -37,7 +37,7 @@ module.exports = function(app){
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
     let to_encrypt = 'temp-data';
     let enc_file = 'enc_file';
-    console.log(info)
+    //console.log(info)
     fs.writeFileSync(to_encrypt, info, 'utf8');
 
     // run encryption
@@ -63,7 +63,7 @@ module.exports = function(app){
     .then(checkStatus(res))
     .then(resp => resp.text()) // Transform the data into text
     .then(data => {
-      console.log(data);
+      //console.log(data);
       if(data == "ok"){
         console.log("Data received")
         res.send("WRITE-OK");
@@ -85,7 +85,7 @@ module.exports = function(app){
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
-      console.log(data)
+      //console.log(data)
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
@@ -132,7 +132,7 @@ module.exports = function(app){
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
-      console.log(data)
+      //console.log(data)
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
