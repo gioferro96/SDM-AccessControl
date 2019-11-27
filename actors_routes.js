@@ -12,46 +12,82 @@ function checkStatus(res) {
 }
  
 module.exports = function(app){ 
-  app.use(cors());
+  app.use(cors()); 
 
   app.get('/get_client_data/:id', function (req, res){
     
-    console.log("Making reques for tempData with name " + req.params.id)
+    var p = req.params.id.split(",");
+    var target = p[0];
+    var actor = p[1];
+
+    console.log("Making requesss for data with name " + target + " " + actor)
     
     fetch('http://localhost:4000/data', {
       method: 'SEARCH',
-      body:    'username=' + req.params.id,
+      body:    'username=' + target,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
     .then(checkStatus(res))
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
-      console.log("Data received")
+      console.log("Data received");
+      console.log(data.length);
+      
+      for (var i = 0; i < data.length; i++){
+
+        let to_decrypt = 'temp_data';
+        let dec_file = 'dec_file';
+        console.log("Information to write")
+        console.log(data[i].info);
+        fs.writeFileSync(to_decrypt, data[i].info, 'hex');
+
+        // run decryption
+        const { execSync } = require('child_process');
+        execSync('cpabe-dec -o ' + dec_file + ' .key-store/pub_key'  + ' .key-store/' + actor + '_private_key ' + to_decrypt, (err, stdout, stderr) => {
+          if (err) {
+              console.log("Cannot decrypt, problem");
+              res.send("Error");
+            return;
+          }
+        });
+
+        let raw_data = fs.readFileSync(dec_file, 'utf8');
+        data[i].info = raw_data;
+      }
+
+      console.log(data);
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
+
   
   .get('/get_key/:p', function(req, res){2
 
     var p = req.params.p.split(",");
-    console.log(p[0])
-    console.log("Making request to DB for user with name " + p[0])
-    console.log("Attributes: " + p[4]);
+    var uname = p[0];
+    var address = p[1];
+    var date = p[2];
+    var role = p[3];
+    var attribute = p[4];
+
+    console.log("Making request to DB for user with name " + uname)
+    console.log("Role: " + role);
+    
     fetch('http://localhost:4000/user', {
       method: 'POST',
-      body:  'name=' + p[0] + '&address=' + p[1] + '&dob=' + p[2] + '&category=' + p[3],
+      body:  'name=' + uname + '&address=' + address + '&dob=' + date + '&category=' + role,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
     .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
     .then(resp => resp.text()) // Transform the data into text
     .then(data => {
       if (data == "ok"){
-        console.log("Making request to TA for key for user with name " + p[0])
-        console.log("Attributes: " + p[4]);
+        console.log("Making request to TA for key for user with name " + uname)
+        console.log("Attributes: " + attribute);
         fetch('http://localhost:5000/genKey', {
         method: 'SEARCH',
-        body:  'name=' + p[0] + '&attributes=' + p[4],
+        body:  'name=' + uname + '&attributes=' + attribute,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
         .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
@@ -59,8 +95,8 @@ module.exports = function(app){
         .then(data => {
           console.log("Data received")
           
-          let fileNamePrivate = '.key-store/' + p[0] + '_private_key';
-          let fileNamePublic = '.key-store/' +  p[0] + '_public_key';
+          let fileNamePrivate = '.key-store/' + uname + '_private_key';
+          let fileNamePublic = '.key-store/' +  uname + '_public_key';
 
           fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
           fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
@@ -72,6 +108,7 @@ module.exports = function(app){
     }
     }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
   })
+  
   .get('/get_patients', function (req, res){
     fetch('http://localhost:4000/get_all_patients', {
       method: 'GET',
@@ -87,6 +124,7 @@ module.exports = function(app){
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
+  
   .get('/get_actors', function (req, res){
     fetch('http://localhost:4000/get_all_actors', {
       method: 'GET',
