@@ -2,8 +2,8 @@
 Secure Data Management course assignment on cryptographically enforced access control.
 
 System requirements:
-	- "Nodejs"
-	- "npm" installed with various libraries such as "express", "cors", "node-fetch", "fs", "body-parser", etc..
+	- "Nodejs" \\
+	- "npm" installed with various libraries such as "express", "cors", "node-fetch", "fs", "body-parser", etc..\\
 	- "cpabe" library installed 
 	- "mysql" installed with username: "root" and password: ""
 
