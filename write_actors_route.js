@@ -13,6 +13,7 @@ function checkStatus(res) {
 
 module.exports = function(app){
   app.use(cors());
+
   app.get('/send_client_data/:p', function (req, res){
     
     res.header("Access-Control-Allow-Origin", "*");
@@ -86,6 +87,37 @@ module.exports = function(app){
       console.log("Data received")
       console.log(data)
       res.send(data)
+    }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
+    .catch(err => console.log("Error: Status Code = " + err))
+  })
+
+  .post('/add_wactor/', function(req, res){2
+
+    var uname = req.query.name;
+    var address = req.query.address;
+    var date = "2019-09-09";
+    var role = req.query.role;
+
+    console.log("Making request to DB for user with name " + uname)
+    console.log("Role: " + role);
+    console.log(uname, address, date, role)
+
+    fetch('http://localhost:4000/user', {
+      method: 'POST',
+      body:  'name=' + uname + '&address=' + address + '&dob=' + date + '&category=' + role,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+    .then(resp => resp.text()) // Transform the data into text
+    .then(data => {
+      console.log(data);
+      if(data == "ok"){
+        console.log("Data received")
+        res.send("WRITE-OK");
+      }else{
+        console.log("Error");
+        res.send("Error");
+      }
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })

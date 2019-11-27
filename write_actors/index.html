@@ -75,6 +75,18 @@
           </select>
         </p>
       </div>
+      <div class='col-sm-6 form-group'>
+        <label>Register a new write actor</label><br>
+        Enter actor role: <select name="newRole" ng-model="user.role">
+            <option value="hospital" selected="selected">Hospital</option>
+            <option value="healthclub">Health Club</option> 
+        </select><br>
+        Enter name: <input class="form-control" name="newName" placeholder="Alice" ng-model="user.name">
+        Enter address: <input class="form-control" name="newAddress" placeholder="Piet Heinstraat 95, Enschede" ng-model="user.address">
+        <p><input id="addWactor" type="submit" value="Add" class="btn btn-primary" ng-click="addWactor()"></p>
+        <h5 style="color:green;margin-bottom:2%" id="success_add">Success! User registered into the system</h5>
+        <h5 style="color:red;margin-bottom:2%" id="error_add">Error: Something went wrong. </h5>
+      </div>
     </div>
  
     <table id="phr_to_send" class="table" align="center">
