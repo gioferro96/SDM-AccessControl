@@ -241,6 +241,23 @@ app.route('/get_all_actors')
 			});
 	});
 
+app.route('/get_all_write_actors')
+.get((req,res) => {
+	console.log("Request for get all actors")
+	let sql = "select id,name from users where category='hospital' OR category='healthclub'";
+		con.query(sql, function (err, result) {
+			if (err){
+				res.statusCode = 500;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send("Error: "+err);
+			}else{
+				res.statusCode = 200;
+				res.setHeader('Content-Type', 'plain/text');
+				res.send(result);
+			}
+		});
+	});
+
 app.route('/user')
 	.post((req,res) =>{
 		let uname = req.body.name;

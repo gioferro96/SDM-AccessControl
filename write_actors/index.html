@@ -65,14 +65,13 @@
     </header>
 
     <div id="body">
-      
+       
     <div class='row'>
       <div class='col-sm-6'>
         <label>Select Identity</label>
         <p>
           <select name="identity" ng-model="phr_upname">
-            <option value="healthClub">Health Club</option>
-            <option value="hospital">Hospital</option>
+            <option ng-repeat="actor in wactors_list" value="{{actor.id}},{{actor.name}}">{{actor.name}}</option>
           </select>
         </p>
       </div>
@@ -105,9 +104,9 @@
       <div class='col-sm-6'>
         <div class="form-group">
           <label>Send data to DB</label>
-          <h5 style="color:green;margin-bottom:2%" id="success_get_phr">Success! New data has been correcly fetched</h5>
-          <h5 style="color:red;margin-bottom:2%" id="error_get_phr">Error: Something went wrong.</h5>
           <p><input id="sendClientData" type="submit" value="Encrypt!" class="btn btn-primary" ng-click="sendClientData()"></p>
+          <h5 style="color:green;margin-bottom:2%" id="success_key">Success! Data has been encrypted and sent to the DB</h5>
+          <h5 style="color:red;margin-bottom:2%" id="error_key">Error: Something went wrong.</h5>
         </div>
       </div>
     </div> 

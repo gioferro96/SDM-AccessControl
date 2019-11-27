@@ -1,4 +1,4 @@
-var app = angular.module('application', []);
+var app = angular.module('application', []); 
 
 app.run(['$rootScope', '$http', function($rootScope, $http) {
 	var req = {

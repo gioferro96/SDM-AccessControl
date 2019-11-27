@@ -11,11 +11,13 @@ function checkStatus(res) {
   }
 }
  
-module.exports = function(app){
+module.exports = function(app){ 
   app.use(cors());
+
   app.get('/get_client_data/:id', function (req, res){
-    res.header("Access-Control-Allow-Origin", "*");
+    
     console.log("Making reques for tempData with name " + req.params.id)
+    
     fetch('http://localhost:4000/data', {
       method: 'SEARCH',
       body:    'username=' + req.params.id,
@@ -25,16 +27,15 @@ module.exports = function(app){
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
-      
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
   })
   
   .get('/get_key/:p', function(req, res){2
-    res.header("Access-Control-Allow-Origin", "*");
+
     var p = req.params.p.split(",");
-    console.log(p)
+    console.log(p[0])
     console.log("Making request to DB for user with name " + p[0])
     console.log("Attributes: " + p[4]);
     fetch('http://localhost:4000/user', {

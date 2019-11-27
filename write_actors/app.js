@@ -1,10 +1,13 @@
 var app = angular.module('application', []);
-
+ 
 app.run(['$rootScope', '$http', function($rootScope, $http) {
 	var req = {
 		method: 'GET',
-		url: 'http://localhost:5003/get_patients/',
-		headers: {'Access-Control-Allow-Origin': '*'}
+		url: 'http://localhost:5003/get_patients/'
+	};
+	var reqWact = {
+		method: 'GET',
+		url: 'http://localhost:5003/get_wactors/'
 	};
 	console.log('Running request');
 	
@@ -14,17 +17,21 @@ app.run(['$rootScope', '$http', function($rootScope, $http) {
 		$rootScope.users_list = response.data;
 
 	}).catch(err => console.log(err))
+
+	$http(reqWact).then(function(response){
+		console.log(response);
+		
+		$rootScope.wactors_list = response.data;
+
+	}).catch(err => console.log(err))
 	
 }]);
-
+ 
 // Angular Controller
 app.controller('appController', function($scope, appFactory){
 
 	$("#success_key").hide();
 	$("#error_key").hide(); 
-
-	$("#success_get_phr").hide();
-	$("#error_get_phr").hide();
 	
 	$scope.sendClientData = function(){
 
@@ -38,8 +45,14 @@ app.controller('appController', function($scope, appFactory){
 		console.log(req_upname, req_id, req_uname, req_type, req_info);
 
 		appFactory.sendClientData(req_upname, req_id, req_uname, req_type, req_info, function(data){
-			
-			console.log("Fatto");
+			console.log("Fatto")
+			if (data == "WRITE-OK"){
+				$("#success_key").show();
+				$("#error_key").hide();
+			}else{
+				$("#error_key").show();
+				$("#success_key").hide();
+			}
 		});
 	}
 
