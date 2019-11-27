@@ -20,7 +20,10 @@ module.exports = function(app){
     var p = req.params.p.split("-");
     console.log("Making reques for tempData with policy " + p[2]);
     
-    var upname = p[0]; 
+
+
+    var userid = p[0].split(",")[0];
+    var upname = p[0].split(",")[1]; 
     var id = p[1];
     var policy = p[2];
     var type = p[3];
@@ -33,6 +36,7 @@ module.exports = function(app){
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
     let to_encrypt = 'temp-data';
     let enc_file = 'enc_file';
+    console.log(info)
     fs.writeFileSync(to_encrypt, info, 'utf8');
 
     // run encryption
