@@ -70,18 +70,18 @@
       <div class='col-sm-6'>
         <label>Select Identity</label>
         <p>
-          <select name="identity" ng-model="actors_identity" ng-cloak>
+          <select name="actor_identity" ng-model="actor_target" ng-cloak>
               <option ng-repeat="actor in actors_list" value="{{actor.id}},{{actor.name}}">{{actor.name}}</option>
           </select>
         </p>
       </div>
       <div class='col-sm-6 form-group'>
-        <label>Register a new actor and request keys</label>
+        <label>Register a new actor and request keys</label><br>
         Enter actor role: <select name="newRole" ng-model="user.role">
             <option value="doctor" selected="selected">Doctor</option>
             <option value="employer">Employer</option> 
             <option value="insurer">Insurer</option>
-          </select>
+        </select><br>
         Enter actor name: <input class="form-control" name="newName" placeholder="Alice" ng-model="user.name">
         Enter date of birth: <input class="form-control" name="newDate" placeholder="aaaa-mm-gg" ng-model="user.date">
         Enter address: <input class="form-control" name="newAddress" placeholder="Piet Heinstraat 95, Enschede" ng-model="user.address">

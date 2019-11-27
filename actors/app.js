@@ -27,8 +27,8 @@ app.run(['$rootScope', '$http', function($rootScope, $http) {
 
 	}).catch(err => console.log(err))
 	
-}]);
-
+}]); 
+ 
 // Angular Controller
 app.controller('appController', function($rootScope, $scope, appFactory){
 
@@ -58,12 +58,12 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 		});
 	}
 	
-	$scope.getClientData = function(){
+	$scope.getClientData = function(){ 
 
-		console.log("Inside getClientData of actors app.js")
-		var req_target = $scope.request_target.split(",");
-		req_target = req_target[1];
-		console.log(req_target)
+		console.log("Inside getClientData of actors app.js");
+		
+		var req_target = $scope.request_target.split(",")[1] + "," + $scope.actor_target.split(",")[1];
+		console.log("Requesting data for patient with name " + req_target);
 
 		appFactory.getClientData(req_target, function(data){
 			console.log(data);
@@ -82,10 +82,6 @@ app.factory('appFactory', function($http){
 	factory.keyRequest = function(user, attr, callback){
 		console.log('Inside keyRequest factory function')
 		console.log(user.role);
-		console.log(user.name);
-		console.log(user.address);
-		console.log(user.date);
-		console.log(attr);
 		
 		params = user.name + "," + user.address + "," + user.date + "," + user.role + "," + attr;
 		
