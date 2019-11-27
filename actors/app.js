@@ -46,10 +46,11 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 
 		appFactory.keyRequest(user, attr, function(data){
 			console.log(data.status);
-			if (data.status == "KEY-OK"){
+			console.log(data.data.status);
+			if (data.status == 200 && data.data.status == "KEY-OK"){
 				$("#success_key").show(); 
 				$("#error_key").hide();
-				$rootScope.users_list.push({id: data.id, name: user.name});
+				$rootScope.actors_list.push({id: data.id, name: user.name});
 			}else{
 				console.log(data);
 				$("#error_key").show();
@@ -80,14 +81,31 @@ app.factory('appFactory', function($http){
 	var factory = {};
 
 	factory.keyRequest = function(user, attr, callback){
+		
 		console.log('Inside keyRequest factory function')
+		console.log(user.role);
+		console.log(attr);
+
+		params = {name: user.name, address: user.address, dob: user.date, role: user.role, attributes: attr};
+		console.log(params);
+		
+		$http({
+			method: 'POST',
+			url: 'http://localhost:5002/get_key/',
+			params: params
+		}).then(function(output){
+			callback(output)
+		})
+		
+		
+		/*console.log('Inside keyRequest factory function')
 		console.log(user.role);
 		
 		params = user.name + "," + user.address + "," + user.date + "," + user.role + "," + attr;
 		
     	$http.get('http://localhost:5002/get_key/'+params).success(function(output){
 			callback(output)
-		});
+		});*/
 
 	}
 

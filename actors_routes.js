@@ -43,16 +43,25 @@ module.exports = function(app){
 
         // run decryption
         const { execSync } = require('child_process');
-        execSync('cpabe-dec -o ' + dec_file + ' .key-store/pub_key'  + ' .key-store/' + actor + '_private_key ' + to_decrypt, (err, stdout, stderr) => {
+        try{
+          execSync('cpabe-dec -o ' + dec_file + ' .key-store/pub_key'  + ' .key-store/' + actor + '_private_key ' + to_decrypt);
+          let raw_data = fs.readFileSync(dec_file, 'utf8');
+          data[i].info = raw_data;
+          //var data = fs.readFileSync('sample.html');
+        } catch (err){
+            //console.log(err);
+            console.log('Attributes do not satisfy policy')
+            data[i].info = 'You do not have the rights to read this record';
+        }
+        /*execSync('cpabe-dec -o ' + dec_file + ' .key-store/pub_key'  + ' .key-store/' + actor + '_private_key ' + to_decrypt, (err, stdout, stderr) => {
           if (err) {
               console.log("Cannot decrypt, problem");
-              res.send("Error");
-            return;
+              //res.send("Error");
+            //return;
           }
-        });
+        });*/
 
-        let raw_data = fs.readFileSync(dec_file, 'utf8');
-        data[i].info = raw_data;
+        
       }
 
       console.log(data);
@@ -62,18 +71,25 @@ module.exports = function(app){
   })
 
   
-  .get('/get_key/:p', function(req, res){2
+  .post('/get_key/', function(req, res){2
 
-    var p = req.params.p.split(",");
+    var uname = req.query.name;
+    var address = req.query.address;
+    var date = req.query.dob;
+    var role = req.query.role;
+    var attribute = req.query.attributes;
+
+    /*var p = req.params.p.split(",");
     var uname = p[0];
     var address = p[1];
     var date = p[2];
     var role = p[3];
-    var attribute = p[4];
+    var attribute = p[4];*/
 
     console.log("Making request to DB for user with name " + uname)
     console.log("Role: " + role);
-    
+    console.log(uname, address, date, role, attribute)
+
     fetch('http://localhost:4000/user', {
       method: 'POST',
       body:  'name=' + uname + '&address=' + address + '&dob=' + date + '&category=' + role,
@@ -96,10 +112,8 @@ module.exports = function(app){
           console.log("Data received")
           
           let fileNamePrivate = '.key-store/' + uname + '_private_key';
-          let fileNamePublic = '.key-store/' +  uname + '_public_key';
 
           fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
-          fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
 
           res.send({status: "KEY-OK", id: data.id})
         }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
