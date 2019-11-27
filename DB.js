@@ -103,6 +103,7 @@ app.route('/data')
 		let type = req.body.type;
 		//check type is unique
 		let data = req.body.data;
+		console.log('Received data to add: ' + id + ' ' + type + ' ' + data);
 		if((data != null)&&(type != null)&&(id != null)){
 			var dt = new Date();
 			let today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();

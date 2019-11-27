@@ -2,9 +2,9 @@ const fetch = require('node-fetch');
 var fs = require('fs')
 var cors = require('cors')
 
-function checkStatus(res) {
+function checkStatus(res, operation) {
   if (res.statusCode >= 200 && res.statusCode < 300) { // res.status >= 200 && res.status < 300
-      console.log('Status code OK: ' + res.statusCode)
+      console.log('Status code OK for operation: ' + operation + ' - code: ' + res.statusCode)
       return res;
   } else {
       console.log("Thowing error for status code: " + res.statusCode)
@@ -17,16 +17,46 @@ module.exports = function(app){
 
   // reqeust to the DB the data to be verified for a particular user
   app.get('/get_data_to_verify/:id', function (req, res){
-    console.log("Making reques for tempData with id " + req.params.id)
+    console.log(req.params);
+    var id = req.params.id.split('-')[0];
+    var name = req.params.id.split('-')[1];
+    
+    console.log("Making reques for tempData with id " + id);
+    console.log("Making reques for tempData with name " + name);
+
     fetch('http://localhost:4000/tempData', {
       method: 'SEARCH',
-      body:    'id=' + req.params.id,
+      body:    'id=' + id,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
-    .then(checkStatus(res))
+    .then(checkStatus(res, 'Looking for tempData'))
     .then(resp => resp.json()) // Transform the data into json
     .then(data => {
       console.log("Data received")
+      console.log(data.length);
+
+      for (var i = 0; i < data.length; i++){
+
+        let to_decrypt = 'temp_data';
+        let dec_file = 'dec_file';
+        console.log(data[i].info);
+        fs.writeFileSync(to_decrypt, data[i].info, 'hex');
+
+        // run decryption
+        const { execSync } = require('child_process');
+        execSync('cpabe-dec -o ' + dec_file + ' .key-store/pub_key'  + ' .key-store/' + name + '_private_key ' + to_decrypt, (err, stdout, stderr) => {
+          if (err) {
+              console.log("Cannot decrypt, problem");
+              res.send("Error");
+            return;
+          }
+        });
+
+        let raw_data = fs.readFileSync(dec_file, 'utf8');
+        data[i].info = raw_data;
+      }
+
+      console.log(data);
       res.send(data)
     }, err => {console.log("Error:" + err); res.send("Error: " +  err);})
     .catch(err => console.log("Error: Status Code = " + err))
@@ -46,9 +76,10 @@ module.exports = function(app){
       body:  'name=' + name + '&address=' + address + '&dob=' + dob + '&category=patient',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
-    .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+    .then(checkStatus(res, 'Insertig new user to the DB')).catch(err => console.log("Error: Status Code = " + err))
     .then(resp => resp.text()) // Transform the data into text
     .then(data => {
+      console.log(data);
       if (data == "ok"){
         console.log("Making request to TA for key for user with name " + name)
 
@@ -58,17 +89,15 @@ module.exports = function(app){
         body:  'name=' + name + '&attributes=' + attributes,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
-        .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+        .then(checkStatus(res, 'Asking TA to create new private key for user')).catch(err => console.log("Error: Status Code = " + err))
         .then(resp => resp.json()) // Transform the data into json
         .then(data => {
           console.log("Data received");
           
           // create private key and write to key-store
           let fileNamePrivate = '.key-store/' + name + '_private_key';
-          let fileNamePublic = '.key-store/public_key';
 
           fs.writeFileSync(fileNamePrivate, data.private_key, 'hex');
-          fs.writeFileSync(fileNamePublic, data.public_key, 'hex');
 
           res.send({status: "KEY-OK", id: data.id});
         }, err => {console.log("Error while transforming data to json:" + err); res.send("Error: " +  err);})
@@ -99,7 +128,7 @@ module.exports = function(app){
     // run encryption
     const { execSync } = require('child_process');
     console.log("Executing command");
-    execSync('cpabe-enc -o ' + enc_file + ' .key-store/public_key ' + to_encrypt + ' ' + actual_policy, (err, stdout, stderr) => {
+    execSync('cpabe-enc -o ' + enc_file + ' .key-store/pub_key ' + to_encrypt + ' ' + actual_policy, (err, stdout, stderr) => {
       console.log("Command executed");
       if (err) {
           console.log("Cannot encrypt, problem");
@@ -116,7 +145,7 @@ module.exports = function(app){
       body:    'id=' + id + '&type=' + type + '&data=' + enc_data,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
-    .then(checkStatus(res))
+    .then(checkStatus(res, 'Adding new encrypted data to the DB')).catch(err => console.log("Error: Status Code = " + err))
     .then(resp => resp.text()) // Transform the data into text
     .then(data => {
       console.log(data);
@@ -137,31 +166,41 @@ module.exports = function(app){
     var id = req.query.id;
     var name = req.query.name
     var policy = req.query.policy;
-    var verify = req.query.verify;
+    var length = req.query.length;
+    var verify;
+    if (length == 1){
+      verify = JSON.parse(req.query.verify)
+    }else{
+      verify = req.query.verify;
+    }
+     //JSON.parse(req.query.verify); //check if it's correct to parse to JSON here since verify should be an array
 
-    console.log(id, policy, verify);
+    console.log(id, policy, verify, length);
     
     let actual_policy = "'" + policy + "'"
     console.log("Policy: " + actual_policy);
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
-    
-    for (var i = 0; i < verify.length; i++){
-      let to_decrypt = 'temp-data';
+    console.log(length);
+    for (var i = 0; i < length; i++){
+      let to_encrypt = 'temp_data';
       let enc_file = 'enc_file';
-      let dec_file = 'dec_file';
-      fs.writeFileSync(to_decrypt, verify[i].info, 'hex');
+
+      var element;
+      if (length == 1){
+        element = verify;
+      }else{
+        element = JSON.parse(verify[i]);
+      }
+
+
       
-      // run decryption
-      execSync('cpabe-dec -o ' + dec_file + ' .key-store/public_key'  + ' .key-store/' + name + '_private_key ' + to_decrypt, (err, stdout, stderr) => {
-        if (err) {
-            console.log("Cannot decrypt, problem");
-            res.send("Error");
-          return;
-        }
-      });
+      //console.log('Element info: ' + element.info);
+
+      console.log('Info to verify:' + element.info);
+      fs.writeFileSync(to_encrypt, element.info, 'utf8');
 
       // run encryption
-      execSync('cpabe-enc -o ' + enc_file + ' .key-store/public_key ' + dec_file + ' ' + actual_policy, (err, stdout, stderr) => {
+      execSync('cpabe-enc -o ' + enc_file + ' .key-store/pub_key ' + to_encrypt + ' ' + actual_policy, (err, stdout, stderr) => {
         if (err) {
             console.log("Cannot decrypt, problem");
             res.send("Error");
@@ -175,11 +214,11 @@ module.exports = function(app){
       // write encrypted data into user phr
       fetch('http://localhost:4000/data', {
       method: 'POST',
-      body: {id: id, type: verify[i].type, data: enc_data},
+      body: 'id=' + id + '&type=' +  element.type + '&data=' + enc_data,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded',
                  'Access-Control-Allow-Origin': '*'},
       })
-      .then(checkStatus(res))
+      .then(checkStatus(res, 'Adding verified data to the DB')).catch(err => console.log("Error: Status Code = " + err))
       .then(resp => resp.text()) // Transform the data into json
       .then(data => {
         if (data == "ok"){
@@ -188,10 +227,10 @@ module.exports = function(app){
           // delete verified data from database
           fetch('http://localhost:4000/tempData', {
           method: 'DELETE',
-          body:  'id=' + toVerify.id,
+          body:  'id=' + element.id,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           })
-          .then(checkStatus(res)).catch(err => console.log("Error: Status Code = " + err))
+          .then(checkStatus(res, 'Deleting verified data from temporary storage')).catch(err => console.log("Error: Status Code = " + err))
           .then(resp => resp.text()) // Transform the data into json
           .then(data => {
             console.log("Data deleted from tempData")
@@ -209,14 +248,14 @@ module.exports = function(app){
       .catch(err => console.log("Error: Status Code = " + err))
 
       // delete temporary files
-      let del = "rm " + dec_file + ' ' + enc_file + ' ' + temp_data;
-      execSync(del, (err, stdout, stderr) => {
+      let del = "rm " + enc_file + ' ' + to_encrypt;
+      /*execSync(del, (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
           //console.log("Error cp-abe: "+err);
           return;
         }
-      });
+      });*/
     }
 
     res.send("VERIFY-OK");

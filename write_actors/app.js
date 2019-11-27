@@ -35,6 +35,8 @@ app.controller('appController', function($scope, appFactory){
 		var req_type = $scope.phr_type;
 		var req_info = $scope.phr_info;
 
+		console.log(req_upname, req_id, req_uname, req_type, req_info);
+
 		appFactory.sendClientData(req_upname, req_id, req_uname, req_type, req_info, function(data){
 			
 			console.log("Fatto");

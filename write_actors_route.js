@@ -26,13 +26,12 @@ module.exports = function(app){
     var type = p[3];
     var info = p[4];
     
-
     let actual_policy = "'" + policy + "'"
     console.log("Policy: " + actual_policy);
     //let pk = fs.readFileSync('.key-store/' + p[1] + '_public_key', 'hex');
     let to_encrypt = 'temp-data';
     let enc_file = 'enc_file';
-    fs.writeFileSync(to_encrypt, info, 'hex');
+    fs.writeFileSync(to_encrypt, info, 'utf8');
 
     // run encryption
     const { execSync } = require('child_process');

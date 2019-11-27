@@ -56,9 +56,10 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 		list_selected = [];
 		console.log("Inside getDataToVerify of app.js function");
 		var req_identity = $scope.request_identity.split(',')[0];
+		var name = $scope.request_identity.split(',')[1];
 		//console.log(req_identity);
 
-		appFactory.getDataToVerify(req_identity, function(data){
+		appFactory.getDataToVerify(req_identity, name, function(data){
 			//console.log(data);
 			//console.log(data.length)
 			$scope.phr_to_verify = data;
@@ -81,13 +82,33 @@ app.controller('appController', function($rootScope, $scope, appFactory){
 				list_selected.push($scope.phr_to_verify[i]);
 			}
 		}
+		console.log('List to send:');
 		console.log(list_selected);
 		console.log(policy);
 
-		appFactory.verifyData(req_identity, name, list_selected, policy, function(data){
-			console.log(data);
-			console.log(data.length)
-			$scope.phr_to_verify = data;
+		appFactory.verifyData(req_identity, name, list_selected, list_selected.length, policy, function(res){
+			
+			//still_to_verify = [];
+			for(var i = 0; i < $scope.phr_to_verify.length; i++){
+				//console.log('Checking item ' + i + ' - Checkebox is ' + $scope.phr_to_verify[i].isToVerify);
+				if($scope.phr_to_verify[i].isToVerify == true){
+					console.log('Found an element to remove')
+					$scope.phr_to_verify.splice(i, 1);   
+					//console.log('Item is true, pushing in the list')
+					//still_to_verify.push($scope.phr_to_verify[i]);
+				}
+			}
+			console.log($scope.phr_to_verify);
+			//$scope.phr_to_verify = data;
+
+			if (res.status==200 && res.data == "VERIFY-OK"){
+				$("#success_verify_phr").show();
+				$("#error_verify_phr").hide();
+			}else{
+				$("#error_verify_phr").show();
+				$("#success_verify_phr").hide();
+			}
+
 		});
 	}
 
@@ -135,18 +156,21 @@ app.factory('appFactory', function($http){
 
 	}
 
-    factory.getDataToVerify = function(identity, callback){
+    factory.getDataToVerify = function(identity, name, callback){
 		console.log('Inside getDataToVerify factory function')
 		//console.log(identity);
+		params = identity + '-' + name;
 
-    	$http.get('http://localhost:5001/get_data_to_verify/'+identity).success(function(output){
+    	$http.get('http://localhost:5001/get_data_to_verify/'+params).success(function(output){
 			callback(output)
 		});
 	}
 
-	factory.verifyData = function(identity, name, selected, policy, callback){
+	factory.verifyData = function(identity, name, selected, length, policy, callback){
 		console.log('Inside verifyData factory function')
-		var params = {id: identity, name:name, policy: policy, verify: selected}
+		var params = {id: identity, name:name, policy: policy, length: length, verify: selected}
+
+		console.log('Sending verification request for parameters');
 		console.log(params);
 
 		$http({

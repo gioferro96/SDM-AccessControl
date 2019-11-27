@@ -7,8 +7,8 @@ const cors = require('cors')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const { execSync } = require('child_process');
-/*execSync('rm -r .key-store; mkdir .key-store', (err, stdout, stderr) => {
+/*const { execSync } = require('child_process');
+execSync('rm -r .key-store; mkdir .key-store', (err, stdout, stderr) => {
     if (err) {
         console.log('Error launching the server - key-store not created')
         return;

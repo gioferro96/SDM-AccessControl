@@ -9,13 +9,13 @@ var port = 5000;
 let pubkey = "";
 //setup system call --> cpabe-setup
 const { exec } = require('child_process');
-exec('cpabe-setup && rm -r .key-store && mkdir .key-store && mv pub_key ./.key-store/', (err, stdout, stderr) => {
+exec('cpabe-setup && rm -r .key-store && mkdir .key-store && mv pub_key .key-store/', (err, stdout, stderr) => {
 	if (err) {
 		// node couldn't execute the command
 		return;
 	}
 	let fs = require('fs');
-	let filename = "./.key-store/pub_key";
+	let filename = ".key-store/pub_key";
 	pubkey = fs.readFileSync(filename, 'hex');
 	// the *entire* stdout and stderr (buffered)
 	//console.log(`stdout: ${stdout}`);
@@ -26,8 +26,13 @@ exec('cpabe-setup && rm -r .key-store && mkdir .key-store && mv pub_key ./.key-s
 app.route('/genKey')
 	.search((req,res)=>{ 
 		let name = req.body.name;
-		let attr = req.body.attributes;
-		console.log(name+" "+attr);
+		let attributes = req.body.attributes.split(',');
+		let attr = "'"+name+"' '"+ attributes[0]+"'";
+		for (var i = 1; i < attributes.length; i++){
+			attr += " '" + attributes[i]+"'";
+		}
+
+		console.log(attr);
 		let url = "http://localhost:4000/checkname/"+name;
 		fetch(url)
 			.then(body => {
@@ -39,7 +44,7 @@ app.route('/genKey')
 				if(data != null){
 					//console.log("data != null");
 					//system call to create key --> key = cpabe-keygen
-					let s = "cpabe-keygen -o "+name+"_priv_key pub_key master_key '"+attr+"'";
+					let s = "cpabe-keygen -o "+name+"_priv_key .key-store/pub_key master_key "+attr;
 
 					const { execSync } = require('child_process');
 					execSync(s, (err, stdout, stderr) => {
