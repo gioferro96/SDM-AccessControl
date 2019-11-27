@@ -38,7 +38,7 @@ module.exports = function(app){
         let to_decrypt = 'temp_data';
         let dec_file = 'dec_file';
         console.log("Information to write")
-        console.log(data[i].info);
+        //console.log(data[i].info);
         fs.writeFileSync(to_decrypt, data[i].info, 'hex');
 
         // run decryption
